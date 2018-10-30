@@ -1,4 +1,5 @@
 from werkzeug.security import generate_password_hash, check_password_hash
+
 from app.db import db
 
 
@@ -10,10 +11,11 @@ class User(db.Model):
 	role = db.Column(db.String(20))
 	password_hash = db.Column(db.String(255))
 
-	def __init__(self, public_id, email, role, password):
+	def __init__(self, public_id, email, password, role='user'):
+		"""roles: <user> and <admin>"""
 		self.public_id = public_id
 		self.email = email.lower()
-		self.role = role
+		self.role = role.lower()
 		self.set_password(password)
 
 	def set_password(self, password):
