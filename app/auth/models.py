@@ -8,14 +8,14 @@ class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	public_id = db.Column(db.String(50), unique=True)
 	email = db.Column(db.String(120), unique=True)
-	role = db.Column(db.String(20))
+	role = db.Column(db.Integer)
 	password_hash = db.Column(db.String(255))
 
-	def __init__(self, public_id, email, password, role='user'):
-		"""roles: <user> and <admin>"""
+	def __init__(self, public_id, email, password, role=10):
+		"""int role: <user: 10> and <admin: 90>"""
 		self.public_id = public_id
 		self.email = email.lower()
-		self.role = role.lower()
+		self.role = role
 		self.set_password(password)
 
 	def set_password(self, password):
