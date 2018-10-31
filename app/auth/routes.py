@@ -93,7 +93,9 @@ def login():
 	if not succ_status(code=status_code):
 		return json, status_code
 
-	payload = {'email': data['email'], 'password': data['password']}
+	user = User.query.filter_by(email=data['email']).first()
+
+	payload = {'public_id': user.public_id}
 	token = encode_token(payload=payload, lifetime=app.config['LOGIN_TOKEN_LIFETIME'])
 
 	return jsonify({'token': token.decode('utf-8')}), 201

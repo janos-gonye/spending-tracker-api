@@ -1,7 +1,5 @@
 from time import time
 
-from werkzeug.security import generate_password_hash
-
 from app.auth.models import User
 from app.utils import js, succ_status
 from app.utils.validators import validate_email, validate_password
