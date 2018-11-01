@@ -6,28 +6,28 @@ from flask import jsonify, request, current_app as app
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.auth import auth
-from app.auth.validators import validate_confirm_registration_data
-from app.auth.validators import validate_login
-from app.auth.validators import validate_registration_data
+from app.auth.check import token_required
 from app.auth.mail import send_reg_confirm_mail
 from app.auth.mail import send_reg_confirmed_mail
 from app.auth.models import User
+from app.auth.validators import validate_confirm_registration_data
+from app.auth.validators import validate_login
+from app.auth.validators import validate_registration_data
 from app.db import db
 from app.utils import js, succ_status
 from app.utils.token import encode_token, decode_token
 
 
 @auth.after_request
-def add_header(r):
+def no_cache(response):
 	"""
 	Add headers to both force latest IE rendering engine or Chrome Frame,
 	and also to cache the rendered page for 10 minutes.
 	"""
-	r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-	r.headers["Pragma"] = "no-cache"
-	r.headers["Expires"] = "0"
-	r.headers['Cache-Control'] = 'public, max-age=0'
-	return r
+	response.headers["Pragma"] = "no-cache"
+	response.headers["Expires"] = "0"
+	response.headers['Cache-Control'] = 'public, max-age=0'
+	return response
 
 
 @auth.route('/registration', methods=['POST'])
@@ -75,7 +75,8 @@ def confirm_registration():
 
 
 @auth.route('/registration', methods=['DELETE'])
-def del_registration():
+@token_required
+def del_registration(current_user):
 	pass
 
 
@@ -102,6 +103,7 @@ def login():
 
 
 @auth.route('/logout', methods=['POST'])
-def logout():
+@token_required
+def logout(current_user):
 	"""blacklist token"""
 	pass
