@@ -1,4 +1,5 @@
 from functools import wraps, partial
+from time import time
 
 from flask import request
 
@@ -26,7 +27,7 @@ def token_required(f=None, min_role=10):
 		if not token:
 			return js('Token missing.', 401)
 
-		token = token[7:] # cut of <Bearer>
+		token = token[7:] # cut of <Bearer >
 		
 		payload = decode_token(token)
 		if not payload:
@@ -34,6 +35,9 @@ def token_required(f=None, min_role=10):
 
 		current_user = User.query.filter_by(public_id=payload.get('public_id')).first()
 		
+		if payload.get('expiresAt') and payload['expiresAt'] < time():
+			return js('Token expired.', 401)
+
 		if current_user:
 			if int(current_user.role) >= min_role:
 				return f(current_user, *args, **kwargs)
