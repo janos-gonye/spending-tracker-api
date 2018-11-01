@@ -1,6 +1,7 @@
 from uuid import uuid4
 # Use uuid4 bacause uuid1() may compromise privacy since it creates a UUID
 # containing the computer’s network address. uuid4() creates a random UUID.
+from time import time
 
 from flask import jsonify, request, current_app as app
 from sqlalchemy.exc import SQLAlchemyError
@@ -9,6 +10,8 @@ from app.auth import auth
 from app.auth.check import token_required
 from app.auth.mail import send_reg_confirm_mail
 from app.auth.mail import send_reg_confirmed_mail
+from app.auth.mail import send_cancel_reg_confirm_email
+from app.auth.mail import send_cancel_reg_confirmed_email
 from app.auth.models import User
 from app.auth.validators import validate_confirm_registration_data
 from app.auth.validators import validate_login
@@ -34,10 +37,10 @@ def no_cache(response):
 def registration():
 	data = request.get_json()
 
-	json, status_code = validate_registration_data(data=data)
+	message, status_code = validate_registration_data(data=data)
 
 	if not succ_status(code=status_code):
-		return json, status_code
+		return js(message, status_code)
 
 	payload = {'email': data['email'], 'password': data['password']}
 	token = encode_token(payload=payload, lifetime=app.config['REGISTRATION_TOKEN_LIFETIME'])
@@ -52,13 +55,13 @@ def confirm_registration():
 	token = request.args.get('token')
 
 	if not token:
-		return js('Token missing.', 400)
+		return 'Token missing.', 400
 
 	data = decode_token(token)
-	json, status_code = validate_confirm_registration_data(data=data)
+	message, status_code = validate_confirm_registration_data(data=data)
 
 	if not succ_status(code=status_code):
-		return json, status_code
+		return message, status_code
 
 	new_user = User(public_id=uuid4(), email=data['email'], password=data['password'])
 	
@@ -67,32 +70,66 @@ def confirm_registration():
 		db.session.commit()
 	except SQLAlchemyError:
 		db.session.rollback()
-		return js('Internal Server Error', 500)
+		return 'Internal Server Error.', 500
 
 	send_reg_confirmed_mail(recipient=data['email'])
 
-	return js('Registration confirmed.', 200)
+	return 'Registration confirmed.', 200
 
 
 @auth.route('/registration', methods=['DELETE'])
 @token_required
-def del_registration(current_user):
-	pass
+def cancel_registration(current_user):
+	payload = {'public_id': current_user.public_id}
+	token = encode_token(payload=payload, lifetime=app.config['CANCEL_REGISTRATION_TOKEN_LIFETIME'])
+	
+	send_cancel_reg_confirm_email(recipient=current_user.email, token=token.decode('utf-8'))
+	
+	return js('Confirmation email has been sent.', 202)
 
 
-@auth.route('/registration/delete/confirm', methods=['GET'])
-def del_registration_confirm():
-	pass
+@auth.route('/registration/cancel/confirm', methods=['GET'])
+def confirm_cancel_registration():
+	token = request.args.get('token')
+
+	if not token:
+		return 'Token missing.', 400
+
+	payload = decode_token(token)
+
+	if not payload:
+		return 'Token invalid.', 400
+
+	if payload.get('expiresAt') and float(payload['expiresAt']) < time():
+		return 'Token expired.', 400
+
+	user = User.query.filter_by(public_id=payload.get('public_id')).first()
+
+	if not user:
+		return 'Token invalid.', 400
+
+	email = user.email
+
+	try:
+		db.session.delete(user)
+		db.session.commit()
+	except SQLAlchemyError:
+		db.session.rollback()
+		return 'Internal Server Error.', 500
+
+	send_cancel_reg_confirmed_email(recipient=email)
+
+	return 'Registration cancelled.', 200
 
 
 @auth.route('/login', methods=['POST'])
 def login():
 	data = request.get_json()
 
-	json, status_code = validate_login(data)
+	message, status_code = validate_login(data)
 
 	if not succ_status(code=status_code):
-		return json, status_code
+		return js(message, status_code)
 
 	user = User.query.filter_by(email=data['email']).first()
 

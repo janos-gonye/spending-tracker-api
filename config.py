@@ -24,7 +24,8 @@ SQLALCHEMY_DATABASE_URI 		= environ.get('SQLALCHEMY_DATABASE_URI')
 SQLALCHEMY_TRACK_MODIFICATIONS 	= environ.get('SQLALCHEMY_TRACK_MODIFICATIONS') == 'True'
 
 # Non flask or flask extension related
-REGISTRATION_TOKEN_LIFETIME 	= int(environ.get('REGISTRATION_TOKEN_LIFETIME', 24 * 60 * 60)) # seconds
-LOGIN_TOKEN_LIFETIME			= int(environ.get('LOGIN_TOKEN_LIFETIME', 60 * 60)) # seconds
+REGISTRATION_TOKEN_LIFETIME 		= int(environ.get('REGISTRATION_TOKEN_LIFETIME', 24 * 60 * 60)) # seconds
+CANCEL_REGISTRATION_TOKEN_LIFETIME	= int(environ.get('CANCEL_REGISTRATION_TOKEN_LIFETIME', 24 * 60 * 60)) # seconds
+LOGIN_TOKEN_LIFETIME				= int(environ.get('LOGIN_TOKEN_LIFETIME', 60 * 60)) # seconds
 
 del environ
