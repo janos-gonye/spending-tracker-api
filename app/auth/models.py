@@ -6,10 +6,10 @@ from app.db import db
 class User(db.Model):
 	__tablename__ = 'users'
 	id = db.Column(db.Integer, primary_key=True)
-	public_id = db.Column(db.String(50), unique=True)
-	email = db.Column(db.String(120), unique=True)
-	role = db.Column(db.Integer)
-	password_hash = db.Column(db.String(255))
+	public_id = db.Column(db.String(50), unique=True, nullable=False)
+	email = db.Column(db.String(120), unique=True, nullable=False)
+	role = db.Column(db.Integer, nullable=False)
+	password_hash = db.Column(db.String(255), nullable=False)
 
 	def __init__(self, public_id, email, password, role=10):
 		"""int role: <user: 10> and <admin: 90>"""
