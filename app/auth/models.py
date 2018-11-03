@@ -10,6 +10,7 @@ class User(db.Model):
 	email = db.Column(db.String(120), unique=True, nullable=False)
 	role = db.Column(db.Integer, nullable=False)
 	password_hash = db.Column(db.String(255), nullable=False)
+	categories = db.relationship('Category')
 
 	def __init__(self, public_id, email, password, role=10):
 		"""int role: <user: 10> and <admin: 90>"""
