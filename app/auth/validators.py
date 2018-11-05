@@ -8,7 +8,7 @@ from app.utils.validators import validate_email, validate_password
 def validate_registration_data(data):
 	"""doesn't check if user already registered"""
 	if not data:
-		return 'Only JSON payload accepted.', 400
+		return 'JSON payload requested.', 400
 
 	email = data.get('email')
 	password = data.get('password')
@@ -58,7 +58,7 @@ def already_registered(email):
 
 def validate_login(data):
 	if not data:
-		return 'Only JSON payload accepted.', 400
+		return 'JSON payload required.', 400
 
 	email = data.get('email')
 	password = data.get('password')

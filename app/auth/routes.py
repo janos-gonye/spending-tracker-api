@@ -7,7 +7,7 @@ from flask import jsonify, request, current_app as app
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.auth import auth
-from app.auth.check import token_required
+from app.auth.decorators import token_required
 from app.auth.mail import send_reg_confirm_mail
 from app.auth.mail import send_reg_confirmed_mail
 from app.auth.mail import send_cancel_reg_confirm_email

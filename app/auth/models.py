@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from app.db import db
@@ -10,6 +12,8 @@ class User(db.Model):
 	email = db.Column(db.String(120), unique=True, nullable=False)
 	role = db.Column(db.Integer, nullable=False)
 	password_hash = db.Column(db.String(255), nullable=False)
+	created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+	updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 	categories = db.relationship('Category')
 
 	def __init__(self, public_id, email, password, role=10):
@@ -24,3 +28,4 @@ class User(db.Model):
 
 	def check_password(self, password):
 		return check_password_hash(self.password_hash, password)
+	
