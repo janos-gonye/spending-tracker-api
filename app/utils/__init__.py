@@ -1,3 +1,5 @@
+from re import compile
+
 from flask import jsonify
 
 
@@ -17,3 +19,24 @@ def key_exists(data, key):
 		return True, data[key]
 	except KeyError:
 		return False, None
+
+
+def is_utc(string):
+	re = compile(r"^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$")
+	return bool(re.search(string))
+
+
+def is_int(string):
+	try:
+		int(string)
+		return True
+	except ValueError:
+		return False
+
+
+def is_float(string):
+	try:
+		float(string)
+		return True
+	except ValueError:
+		return False

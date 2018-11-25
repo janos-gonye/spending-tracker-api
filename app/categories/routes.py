@@ -49,17 +49,17 @@ def get_categories(current_user):
 	return js([cat.as_dict() for cat in cats], 200, 'categories')
 
 
-@cat_blueprint.route('<int:id>', methods=['GET'])
+@cat_blueprint.route('<int:cat_id>', methods=['GET'])
 @token_required
 @get_category_or_404
-def get_category(current_user, cat, id):
+def get_category(current_user, cat):
 	return js(cat.as_dict(), 200, 'category')
 
 
-@cat_blueprint.route('<int:id>', methods=['PATCH'])
+@cat_blueprint.route('<int:cat_id>', methods=['PATCH'])
 @token_required
 @get_category_or_404
-def update_category(current_user, cat, id):
+def update_category(current_user, cat):
 	data = request.get_json()
 	message, status_code = validate_update_category_data(data=data,
 														 user=current_user,
@@ -90,10 +90,10 @@ def update_category(current_user, cat, id):
 	return js(cat.as_dict(), 200, 'category')
 
 
-@cat_blueprint.route('/<int:id>', methods=['DELETE'])
+@cat_blueprint.route('/<int:cat_id>', methods=['DELETE'])
 @token_required
 @get_category_or_404
-def delete_category(current_user, cat, id):
+def delete_category(current_user, cat):
 	try:
 		db.session.delete(cat)
 		db.session.commit()

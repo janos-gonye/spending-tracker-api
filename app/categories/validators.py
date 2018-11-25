@@ -1,5 +1,3 @@
-from sqlalchemy import func
-
 from app.categories.models import Category
 from app.utils import key_exists
 
@@ -91,15 +89,3 @@ def validate_update_category_data(data, user, cat_to_change):
 			return 'Title and parent_id must be unique together.', 400
 
 	return 'Category valid.', 200
-
-
-def validate_title(title, required=False):
-	pass
-
-
-def validate_description(description, required=False):
-	pass
-
-
-def validate_parent_id(parent_id, required=False):
-	pass

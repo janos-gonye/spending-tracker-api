@@ -21,6 +21,7 @@ class Category(db.Model):
 	created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 	updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 	children = db.relationship("Category")
+	transactions = db.relationship("Transaction")
 
 	def as_dict(self):
 		return {
@@ -28,5 +29,6 @@ class Category(db.Model):
 			'title': self.title,
 			'description': self.description,
 			'parent_id': self.parent_id,
-			'children': [child.as_dict() for child in self.children]
+			'children': [child.as_dict() for child in self.children],
+			'transactions': [t.as_dict() for t in self.transactions],
 		}
