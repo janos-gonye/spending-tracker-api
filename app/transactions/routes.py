@@ -49,7 +49,7 @@ def create_transaction(current_user, cat):
 @get_category_or_404
 def get_transactions(current_user, cat):
 	trans_s = Transaction.query.filter_by(category_id=cat.id).all()
-	return js([trans.as_dict() for trans in trans_s], 200, 'categories')
+	return js([trans.as_dict() for trans in trans_s], 200, 'transactions')
 
 
 @trans_blueprint.route('/<int:trans_id>', methods=['GET'])
@@ -57,7 +57,7 @@ def get_transactions(current_user, cat):
 @get_category_or_404
 @get_trans_or_404
 def get_transaction(current_user, cat, trans):
-	return js(trans.as_dict(), 200, 'category')
+	return js(trans.as_dict(), 200, 'transaction')
 
 
 @trans_blueprint.route('/<int:trans_id>', methods=['PATCH'])
@@ -95,7 +95,7 @@ def update_transaction(current_user, cat, trans):
 		db.session.rollback()
 		return js('Internal Server Error.', 500)
 
-	return js(trans.as_dict(), 200, 'category')
+	return js(trans.as_dict(), 200, 'transaction')
 
 
 @trans_blueprint.route('/<int:trans_id>', methods=['DELETE'])
@@ -110,4 +110,4 @@ def delete_transaction(current_user, cat, trans):
 		db.session.rollback()
 		return js('Internal Server Error', 500)
 
-	return js(trans.as_dict(), 200, 'category')
+	return js(trans.as_dict(), 200, 'transaction')
