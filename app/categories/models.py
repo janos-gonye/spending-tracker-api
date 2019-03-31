@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from app.db import db
+from app.utils import datetime2timestamp
 
 
 # TODO: find out how to add unique together constraint to the model (if possible) 
@@ -40,6 +41,6 @@ class Category(db.Model):
 			'title': self.title,
 			'description': self.description,
 			'parent': parent,
-			'created_at': self.created_at,
-			'updated_at': self.updated_at,
+			'created_at': datetime2timestamp(self.created_at),
+			'updated_at': datetime2timestamp(self.updated_at),
 		}

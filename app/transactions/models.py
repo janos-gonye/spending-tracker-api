@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from app.db import db
-
+from app.utils import datetime2timestamp
 
 class Transaction(db.Model):
 	__tablename__ = 'transactions'
@@ -21,7 +21,7 @@ class Transaction(db.Model):
 		return {
 			'id': self.id,
 			'amount': self.amount,
-			'processed_at': self.processed_at,
+			'processed_at': datetime2timestamp(self.processed_at),
 			'comment': self.comment,
 			'category_id': self.category_id,
 		}
