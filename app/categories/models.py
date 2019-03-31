@@ -23,12 +23,23 @@ class Category(db.Model):
 	children = db.relationship("Category")
 	transactions = db.relationship("Transaction")
 
+	@property
+	def parent(self):
+		parent = Category.query.filter_by(id=self.parent_id).all()
+		if len(parent) == 0:
+			return None
+		return parent[0]
+
 	def as_dict(self):
+		if not self.parent:
+			parent = None
+		else:
+			parent = self.parent.as_dict()
 		return {
 			'id': self.id,
 			'title': self.title,
 			'description': self.description,
-			'parent_id': self.parent_id,
-			'children': [child.as_dict() for child in self.children],
-			'transactions': [t.as_dict() for t in self.transactions],
+			'parent': parent,
+			'created_at': self.created_at,
+			'updated_at': self.updated_at,
 		}
