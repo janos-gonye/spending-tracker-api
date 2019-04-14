@@ -45,7 +45,7 @@ def create_category(current_user):
 @cat_blueprint.route('', methods=['GET'])
 @token_required
 def get_categories(current_user):
-	cats = Category.query.filter_by(parent_id=None, user_id=current_user.id).all()
+	cats = Category.query.filter_by(user_id=current_user.id).all()
 	return js([cat.as_dict() for cat in cats], 200, 'categories')
 
 
