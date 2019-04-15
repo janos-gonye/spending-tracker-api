@@ -27,9 +27,9 @@ def validate_create_category_data(user, data):
 		return 'Title required.', 400
 
 	if description_in_json:
-		if not description:
+		if description is None:
 			return 'Description may not be <null>.', 400
-		elif not (MIN_DESCRIPTION_LEN < len(description) < MAX_DESCRIPTION_LEN):
+		elif not (MIN_DESCRIPTION_LEN <= len(description) < MAX_DESCRIPTION_LEN):
 			return 'Description must be at least %s max %s characters long.' % (
 				MIN_DESCRIPTION_LEN, MAX_DESCRIPTION_LEN), 400
 
@@ -64,7 +64,7 @@ def validate_update_category_data(data, user, cat_to_change):
 				MIN_TITLE_LEN, MAX_TITLE_LEN), 400
 
 	if description_in_json:
-		if not description:
+		if description is None:
 			return 'Description may not be <null>.', 400
 		elif not (MIN_DESCRIPTION_LEN < len(description) < MAX_DESCRIPTION_LEN):
 			return 'Description must be at least %s max %s characters long.' % (
