@@ -14,7 +14,7 @@ def validate_create_category_data(user, data):
 
 	# use this as data.get(...) would give None whether key is not in JSON or key's value is null
 	title_in_json, title = key_exists(data=data, key='title')
-	description_in_json, description_in_json = key_exists(data=data, key='description')
+	description_in_json, description = key_exists(data=data, key='description')
 	parent_id_in_json, parent_id = key_exists(data=data, key='parent_id')
 
 	if title_in_json:
