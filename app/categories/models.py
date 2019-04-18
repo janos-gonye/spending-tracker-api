@@ -21,8 +21,8 @@ class Category(db.Model):
 	parent_id = db.Column(db.Integer, db.ForeignKey('categories.id', ondelete='cascade'), nullable=True, default=None)
 	created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
 	updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
-	children = db.relationship("Category")
-	transactions = db.relationship("Transaction")
+	children = db.relationship("Category", cascade="all,delete")
+	transactions = db.relationship("Transaction", cascade="all,delete")
 
 	@property
 	def parent(self):
