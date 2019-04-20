@@ -10,7 +10,7 @@ from app.categories.models import Category
 from app.categories.validators import validate_create_category_data
 from app.categories.validators import validate_update_category_data
 from app.db import db
-from app.utils import js, succ_status
+from app.utils import js, succ_status, key_exists
 
 
 @cat_blueprint.route('', methods=['POST'])
@@ -68,18 +68,20 @@ def update_category(current_user, cat):
 		return js(message, status_code)
 
 	title = data.get('title')
-	description = data.get('description')
-	parent_id = data.get('parent_id')
+	description_in_json, description = key_exists(data=data, key='description')
+	parent_id_in_json, parent_id = key_exists(data=data, key='parent_id')
 
 	# if any of them changed
 	if cat.title != title or \
-	   cat.description != description or \
-	   cat.parent_id != parent_id:
+	   description_in_json and cat.description != description or \
+	   parent_id_in_json and cat.parent_id != parent_id:
 		cat.updated_at = datetime.utcnow()
 
 	cat.title = title if title else cat.title
-	cat.description = description if description is not None else cat.description
-	cat.parent_id = parent_id if parent_id else cat.parent_id
+	if description_in_json:
+		cat.description = description
+	if parent_id_in_json:
+		cat.parent_id = parent_id
 
 	try:
 		db.session.commit()
