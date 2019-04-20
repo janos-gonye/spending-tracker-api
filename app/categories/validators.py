@@ -75,6 +75,8 @@ def validate_update_category_data(data, user, cat_to_change):
 			return "Parent doesn't exist.", 400
 		elif int(parent_id) == cat_to_change.id:
 			return "Parent may not be itself.", 400
+		elif int(parent_id) in map(lambda child: child.id, cat_to_change.get_descendents()):
+			return "Parent may not be descendent of the category being updated.", 400
 
 	ti = title if title_in_json and title else cat_to_change.title
 	pi = parent_id if parent_id_in_json and parent_id else cat_to_change.parent_id

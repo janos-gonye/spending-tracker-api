@@ -44,3 +44,10 @@ class Category(db.Model):
 			'created_at': datetime2timestamp(self.created_at),
 			'updated_at': datetime2timestamp(self.updated_at),
 		}
+
+	def get_descendents(self):
+		descendents = []
+		for child in self.children:
+			descendents.append(child)
+			descendents += child.get_descendents()
+		return descendents
