@@ -68,7 +68,7 @@ def update_category(current_user, cat):
 		return js(message, status_code)
 
 	title = data.get('title')
-	description = data.get('title')
+	description = data.get('description')
 	parent_id = data.get('parent_id')
 
 	# if any of them changed
@@ -78,8 +78,7 @@ def update_category(current_user, cat):
 		cat.updated_at = datetime.utcnow()
 
 	cat.title = title if title else cat.title
-	if description:
-		cat.description = description if description else cat.description
+	cat.description = description if description is not None else cat.description
 	cat.parent_id = parent_id if parent_id else cat.parent_id
 
 	try:
