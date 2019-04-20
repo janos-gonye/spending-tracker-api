@@ -1,3 +1,4 @@
+from datetime import datetime
 from datetime import timezone
 
 from re import compile
@@ -30,6 +31,19 @@ def is_utc(string):
 
 def datetime2timestamp(date):
 	return date.replace(tzinfo=timezone.utc).timestamp()
+
+
+def timestamp2datetime(timestamp):
+	return datetime.utcfromtimestamp(float(timestamp))
+
+
+def is_timestamp(string):
+	try:
+		if 0 > float(string):
+			raise ValueError
+		return True
+	except ValueError:
+		return False
 
 
 def is_int(string):

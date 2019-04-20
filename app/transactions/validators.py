@@ -1,5 +1,7 @@
+import time
+
 from app.transactions.models import Transaction
-from app.utils import key_exists, is_utc, is_int, is_float
+from app.utils import key_exists, is_timestamp, is_int, is_float
 
 
 MIN_COMMENT_LEN = Transaction.MIN_COMMENT_LEN
@@ -26,8 +28,10 @@ def validate_create_trans_data(data):
 	if processed_at_in_json:
 		if not processed_at:
 			return 'Process datetime may not be <null>.', 400
-		if not is_utc(processed_at):
-			return 'Process datetime must be in format such as "2014-01-01T23:28:56.782Z" (ISO-8601).', 400
+		if not is_timestamp(processed_at):
+			return 'Process datetime must be UNIX timestamp.', 400
+		elif float(processed_at) > time.time():
+			return 'Process datetime cannot be in future.', 400
 	else:
 		return 'Process datetime is required.', 400
 
@@ -56,8 +60,10 @@ def validate_update_trans_data(data):
 	if processed_at_in_json:
 		if not processed_at:
 			return 'Process datetime may not be <null>.', 400
-		if not is_utc(processed_at):
-			return 'Process datetime must be in format such as "2014-01-01T23:28:56.782Z" (ISO-8601).', 400
+		if not is_timestamp(processed_at):
+			return 'Process datetime must be UNIX timestamp.', 400
+		elif float(processed_at) > time.time():
+			return 'Process datetime cannot be in future.', 400
 
 	if comment_in_json and comment and not (MIN_COMMENT_LEN < len(str(comment)) < MAX_COMMENT_LEN):
 		return 'Comment must be at least %s max %s characters long.' % (

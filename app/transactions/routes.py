@@ -11,7 +11,7 @@ from app.transactions.decorators import get_trans_or_404
 from app.transactions.models import Transaction
 from app.transactions.validators import validate_create_trans_data
 from app.transactions.validators import validate_update_trans_data
-from app.utils import js, succ_status, key_exists
+from app.utils import js, succ_status, key_exists, timestamp2datetime, datetime2timestamp
 
 
 @trans_blueprint.route('', methods=['POST'])
@@ -30,7 +30,7 @@ def create_transaction(current_user, cat):
 	comment = data.get('comment')
 
 	new_trans = Transaction(amount=amount,
-							processed_at=processed_at,
+							processed_at=timestamp2datetime(processed_at),
 							comment=comment,
 							category_id=cat.id)
 
@@ -79,13 +79,13 @@ def update_transaction(current_user, cat, trans):
 	if amount_in_json and float(trans.amount) != float(amount) or \
 	   comment_in_json and trans.comment != comment or \
 	   processed_at_in_json and \
-	   (datetime.strptime(processed_at, '%Y-%m-%dT%H:%M:%S.%fZ') != trans.processed_at):
+	   (processed_at != datetime2timestamp(trans.processed_at)):
 	   	trans.updated_at = datetime.utcnow()
 
 	if amount_in_json:
 		trans.amount = amount
 	if processed_at_in_json:
-		trans.processed_at = processed_at
+		trans.processed_at = timestamp2datetime(processed_at)
 	if comment_in_json:
 		trans.comment = comment
 
