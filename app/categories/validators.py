@@ -70,7 +70,7 @@ def validate_update_category_data(data, user, cat_to_change):
 			return 'Description must be at least %s max %s characters long.' % (
 				MIN_DESCRIPTION_LEN, MAX_DESCRIPTION_LEN), 400
 
-	if parent_id_in_json:
+	if parent_id_in_json and parent_id is not None:
 		if not Category.query.filter_by(id=parent_id, user_id=user.id).first():
 			return "Parent doesn't exist.", 400
 		elif int(parent_id) == cat_to_change.id:
