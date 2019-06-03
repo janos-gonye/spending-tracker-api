@@ -48,7 +48,12 @@ def create_transaction(current_user, cat):
 @token_required
 @get_category_or_404
 def get_transactions(current_user, cat):
-	trans_s = Transaction.query.filter_by(category_id=cat.id).all()
+	if cat == '__all__':
+		trans_s = []
+		for cat in current_user.categories:
+			trans_s += cat.transactions
+	else:
+		trans_s = Transaction.query.filter_by(category_id=cat.id).all()
 	return js([trans.as_dict() for trans in trans_s], 200, 'transactions')
 
 

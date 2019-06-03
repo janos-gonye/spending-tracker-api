@@ -1,6 +1,8 @@
 from functools import wraps
+from urllib.parse import unquote
 
 from flask import request
+from flask import url_for
 
 from app.categories.models import Category
 from app.utils import js
@@ -9,7 +11,13 @@ from app.utils import js
 def get_category_or_404(f):
 	@wraps(f)
 	def decorated(current_user, *args, **kwargs):
-		cat = Category.query.filter_by(id=request.view_args['cat_id'], user_id=current_user.id).first()
+		# Special path used when requesting all transactions
+		# that belong to 'current_user'
+		special_path = unquote(url_for("transactions.get_transactions", cat_id="*"))
+		param = request.view_args['cat_id']
+		if param == '*' and request.path == special_path:
+			return f(current_user, '__all__')
+		cat = Category.query.filter_by(id=param, user_id=current_user.id).first()
 		if not cat:
 			return js('Category not found.', 404)
 		return f(current_user, cat)
