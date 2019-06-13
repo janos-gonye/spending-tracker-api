@@ -15,7 +15,7 @@ def get_category_or_404(f):
 		# that belong to 'current_user'
 		special_path = unquote(url_for("transactions.get_transactions", cat_id="*"))
 		param = request.view_args['cat_id']
-		if param == '*' and request.path == special_path:
+		if param == '*' and request.path == special_path and request.method == "GET":
 			return f(current_user, '__all__')
 		cat = Category.query.filter_by(id=param, user_id=current_user.id).first()
 		if not cat:
