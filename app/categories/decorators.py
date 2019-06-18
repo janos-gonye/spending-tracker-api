@@ -15,13 +15,17 @@ def get_category_or_404(f):
 		# that belong to 'current_user'
 		special_path = unquote(url_for("transactions.get_transactions", cat_id="*"))
 		param = request.view_args['cat_id']
-		if param == '*' and request.path == special_path:
-			if request.method == "GET":
-				return f(current_user, '__all__')
-			elif request.method != "GET":
+		if param == '*':
+			if request.path == special_path:
+				if request.method == "GET":
+					return f(current_user, '__all__')
+				elif request.method != "GET":
+					return js('Category not found.', 404)	
+			else:
 				return js('Category not found.', 404)
-		cat = Category.query.filter_by(id=param, user_id=current_user.id).first()
-		if not cat:
+		try:
+			cat = Category.query.filter_by(id=param, user_id=current_user.id)[0]
+		except IndexError:
 			return js('Category not found.', 404)
 		return f(current_user, cat)
 	return decorated
