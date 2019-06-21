@@ -15,7 +15,7 @@ def get_category_or_404(f):
 		# that belong to 'current_user'
 		special_path = unquote(url_for("transactions.get_transactions", cat_id="*"))
 		param = request.view_args['cat_id']
-		if not param.isdigit():
+		if type(param) is not int and not param.isdigit():
 			if param == '*' and request.path == special_path and request.method == "GET":
 				return f(current_user, '__all__')
 			return js('Category not found.', 404)
