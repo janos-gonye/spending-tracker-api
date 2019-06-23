@@ -7,7 +7,7 @@ from app.categories.models import Category
 from app.statistics import statistics_blueprint
 from app.statistics.helpers import get_statistics as get_statistics_
 from app.statistics.mail import send_statistics_export_mail
-from app.utils import js
+from app.utils import js, timestamp2datetime
 from app.utils.params import get_param_from, get_param_to
 
 
@@ -32,14 +32,18 @@ def export_statistics(current_user):
     except ValueError as err:
         return js(str(err), 400)
     statistics = get_statistics_(user=current_user, from_=from_, to=to)
+    from_ = timestamp2datetime(timestamp=from_)
+    to = timestamp2datetime(timestamp=to)
+    fmt = "%Y-%m-%d"
+    timerange_str = from_.strftime(fmt) + "_" + to.strftime(fmt)
     attachments = [
         {
-            "filename": "statistics.json",
+            "filename": f"statistics_{timerange_str}.json",
             "content_type": "application/json",
             "data": json.dumps(statistics)
         },
         {
-            "filename": "statistics.xml",
+            "filename": f"statistics_{timerange_str}.xml",
             "content_type": "application/xml",
             "data": dicttoxml(statistics, custom_root='statistics',
                               attr_type=False)
@@ -47,4 +51,4 @@ def export_statistics(current_user):
     ]
     send_statistics_export_mail(recipient=current_user.email,
                                 attachments=attachments)
-    return js("Email has been sent with statistics.")
+    return js("Email sent.")
