@@ -1,5 +1,4 @@
 from datetime import datetime
-from time import time
 
 from flask import request
 from sqlalchemy.exc import SQLAlchemyError
@@ -13,6 +12,7 @@ from app.transactions.models import Transaction
 from app.transactions.validators import validate_create_trans_data
 from app.transactions.validators import validate_update_trans_data
 from app.utils import js, succ_status, key_exists, timestamp2datetime, datetime2timestamp
+from app.utils.params import get_param_from, get_param_to
 
 
 @trans_blueprint.route('', methods=['POST'])
@@ -49,15 +49,11 @@ def create_transaction(current_user, cat):
 @token_required
 @get_category_or_404
 def get_transactions(current_user, cat):
-	from_ = request.args.get("from") or 0
-	to = request.args.get("to") or int(time())
-	from_, to = str(from_), str(to)
-	if not from_.isdigit():
-		return js("Param 'from' must be a natural number.", 400)
-	if not to.isdigit():
-		return js("Param 'to' must be a natural number.", 400)
-	from_, to = int(from_), int(to)
-
+	try:
+		from_ = get_param_from()
+		to = get_param_to()
+	except ValueError as err:
+		return js(str(err), 400)
 	if cat == '__all__':
 		trans_s = []
 		for cat in current_user.categories:
