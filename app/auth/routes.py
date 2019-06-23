@@ -139,6 +139,12 @@ def login():
 	return jsonify({'token': token.decode('utf-8')}), 201
 
 
+@auth.route('/verify-token', methods=['GET'])
+@token_required
+def token_valid(self):
+	return js('Token valid.')
+
+
 @auth.route('/logout', methods=['POST'])
 @token_required
 def logout(current_user):
