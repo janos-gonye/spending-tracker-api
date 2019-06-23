@@ -7,7 +7,7 @@ def _get_timestamp_param(name, default):
     param = request.args.get(name) or default
     param = str(param)
     if not param.isdigit():
-        raise ValueError(f"Param {name} must be a natural number.")
+        raise ValueError(f"Param '{name}' must be a natural number.")
     return int(param)
 
 
