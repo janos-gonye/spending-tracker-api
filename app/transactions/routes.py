@@ -1,4 +1,5 @@
 from datetime import datetime
+from time import time
 
 from flask import request
 from sqlalchemy.exc import SQLAlchemyError
@@ -48,12 +49,25 @@ def create_transaction(current_user, cat):
 @token_required
 @get_category_or_404
 def get_transactions(current_user, cat):
+	from_ = request.args.get("from") or 0
+	to = request.args.get("to") or int(time())
+	from_, to = str(from_), str(to)
+	if not from_.isdigit():
+		return js("Param 'from' must be a natural number.", 400)
+	if not to.isdigit():
+		return js("Param 'to' must be a natural number.", 400)
+	from_, to = int(from_), int(to)
+
 	if cat == '__all__':
 		trans_s = []
 		for cat in current_user.categories:
 			trans_s += cat.transactions
 	else:
 		trans_s = Transaction.query.filter_by(category_id=cat.id).all()
+	
+	trans_s = filter(
+		lambda t: from_ <= datetime2timestamp(t.processed_at) <= to, trans_s)
+
 	return js([trans.as_dict() for trans in trans_s], 200, 'transactions')
 
 
