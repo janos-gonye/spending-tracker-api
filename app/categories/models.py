@@ -51,3 +51,21 @@ class Category(db.Model):
 			descendents.append(child)
 			descendents += child.get_descendents()
 		return descendents
+
+	def get_ascendants(self):
+		ascendents = []
+		parent = self.parent
+		while parent:
+			ascendents.append(parent)
+			parent = parent.parent
+			if parent is None:
+				break
+		return ascendents[::-1]
+
+	@property
+	def history(self):
+		ascendents_titles = map(lambda c: c.title, self.get_ascendants())
+		ascendents_titles = "/".join(ascendents_titles)
+		if ascendents_titles == "":
+			return self.title
+		return ascendents_titles + "/" + self.title

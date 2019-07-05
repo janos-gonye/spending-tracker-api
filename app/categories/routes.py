@@ -46,6 +46,7 @@ def create_category(current_user):
 @token_required
 def get_categories(current_user):
 	cats = Category.query.filter_by(user_id=current_user.id).all()
+	cats.sort(key=lambda c: c.history)
 	return js([cat.as_dict() for cat in cats], 200, 'categories')
 
 
