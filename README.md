@@ -141,7 +141,7 @@ flask run
 
 ***[GET]** /api/categories*
 
-***[POST] /api/categories*
+***[POST]** /api/categories*
 ```json
 {
 	"title": "<string:required>",
