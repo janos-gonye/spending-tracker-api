@@ -16,92 +16,92 @@ from app.utils import js, succ_status, key_exists
 @cat_blueprint.route('', methods=['POST'])
 @token_required
 def create_category(current_user):
-	data = request.get_json()
+    data = request.get_json()
 
-	message, status_code = validate_create_category_data(user=current_user,
-														 data=data)
-	if not succ_status(code=status_code):
-		return js(message, status_code)
+    message, status_code = validate_create_category_data(user=current_user,
+                                                         data=data)
+    if not succ_status(code=status_code):
+        return js(message, status_code)
 
-	title = data.get('title')
-	description = data.get('description')
-	parent_id = data.get('parent_id')
+    title = data.get('title')
+    description = data.get('description')
+    parent_id = data.get('parent_id')
 
-	new_cat = Category(title=title,
-					   description=description,
-					   user_id=current_user.id,
-					   parent_id=parent_id)
+    new_cat = Category(title=title,
+                       description=description,
+                       user_id=current_user.id,
+                       parent_id=parent_id)
 
-	try:
-		db.session.add(new_cat)
-		db.session.commit()
-	except SQLAlchemyError:
-		db.session.rollback()
-		return js('Internal Server Error.', 500)
+    try:
+        db.session.add(new_cat)
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return js('Internal Server Error.', 500)
 
-	return js(new_cat.as_dict(), 201, key='category')
+    return js(new_cat.as_dict(), 201, key='category')
 
 
 @cat_blueprint.route('', methods=['GET'])
 @token_required
 def get_categories(current_user):
-	cats = Category.query.filter_by(user_id=current_user.id).all()
-	cats.sort(key=lambda c: c.history)
-	return js([cat.as_dict() for cat in cats], 200, 'categories')
+    cats = Category.query.filter_by(user_id=current_user.id).all()
+    cats.sort(key=lambda c: c.history)
+    return js([cat.as_dict() for cat in cats], 200, 'categories')
 
 
 @cat_blueprint.route('<int:cat_id>', methods=['GET'])
 @token_required
 @get_category_or_404
 def get_category(current_user, cat):
-	return js(cat.as_dict(), 200, 'category')
+    return js(cat.as_dict(), 200, 'category')
 
 
 @cat_blueprint.route('<int:cat_id>', methods=['PATCH'])
 @token_required
 @get_category_or_404
 def update_category(current_user, cat):
-	data = request.get_json()
-	message, status_code = validate_update_category_data(data=data,
-														 user=current_user,
-														 cat_to_change=cat)
-	if not succ_status(code=status_code):
-		return js(message, status_code)
+    data = request.get_json()
+    message, status_code = validate_update_category_data(data=data,
+                                                         user=current_user,
+                                                         cat_to_change=cat)
+    if not succ_status(code=status_code):
+        return js(message, status_code)
 
-	title = data.get('title')
-	description_in_json, description = key_exists(data=data, key='description')
-	parent_id_in_json, parent_id = key_exists(data=data, key='parent_id')
+    title = data.get('title')
+    description_in_json, description = key_exists(data=data, key='description')
+    parent_id_in_json, parent_id = key_exists(data=data, key='parent_id')
 
-	# if any of them changed
-	if cat.title != title or \
-	   description_in_json and cat.description != description or \
-	   parent_id_in_json and cat.parent_id != parent_id:
-		cat.updated_at = datetime.utcnow()
+    # if any of them changed
+    if cat.title != title or \
+       description_in_json and cat.description != description or \
+       parent_id_in_json and cat.parent_id != parent_id:
+        cat.updated_at = datetime.utcnow()
 
-	cat.title = title if title else cat.title
-	if description_in_json:
-		cat.description = description
-	if parent_id_in_json:
-		cat.parent_id = parent_id
+    cat.title = title if title else cat.title
+    if description_in_json:
+        cat.description = description
+    if parent_id_in_json:
+        cat.parent_id = parent_id
 
-	try:
-		db.session.commit()
-	except SQLAlchemyError:
-		db.session.rollback()
-		return js('Internal Server Error', 500)
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return js('Internal Server Error', 500)
 
-	return js(cat.as_dict(), 200, 'category')
+    return js(cat.as_dict(), 200, 'category')
 
 
 @cat_blueprint.route('/<int:cat_id>', methods=['DELETE'])
 @token_required
 @get_category_or_404
 def delete_category(current_user, cat):
-	try:
-		db.session.delete(cat)
-		db.session.commit()
-	except SQLAlchemyError:
-		db.session.rollback()
-		return js('Internal Server Error', 500)
+    try:
+        db.session.delete(cat)
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return js('Internal Server Error', 500)
 
-	return js(cat.as_dict(), 200, 'category')
+    return js(cat.as_dict(), 200, 'category')

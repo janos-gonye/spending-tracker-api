@@ -4,12 +4,14 @@ from app.utils import datetime2timestamp
 
 
 def min_(iterable):
-    if len(iterable) == 0: return 0
+    if len(iterable) == 0:
+        return 0
     return min(iterable)
 
 
 def max_(iterable):
-    if len(iterable) == 0: return 0
+    if len(iterable) == 0:
+        return 0
     return max(iterable)
 
 
@@ -18,7 +20,8 @@ def count(iterable):
 
 
 def mean(iterable):
-    if len(iterable) == 0: return 0
+    if len(iterable) == 0:
+        return 0
     return sum(iterable) / len(iterable)
 
 
@@ -37,7 +40,7 @@ def get_statistics(user, from_, to):
     statistics = []
     for category in categories:
         statistics.append(_get_statistics(category=category,
-                          from_=from_, to=to))
+                                          from_=from_, to=to))
     return statistics
 
 
