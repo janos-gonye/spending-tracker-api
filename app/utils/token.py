@@ -12,10 +12,10 @@ from jwt.exceptions import PyJWTError  # base class of all pyjwt exceptions
 def encode_token(payload, lifetime=3600, from_=None):
     """
     <lifetime> as seconds
-                       if lifetime is None, the token never expires --> ! Not recommended
+    if lifetime is None, the token never expires --> ! Not recommended
     ---
     <from_> as seconds since epoch
-                if from_ is None, set from_ to the current timestamp 
+    if from_ is None, set from_ to the current timestamp
     """
     if not from_:
         from_ = time()
