@@ -1,6 +1,7 @@
 from functools import wraps
 
 from app.common import js
+from app.common.exceptions import ValidationError
 
 
 def jsonify_view(f):
@@ -16,4 +17,14 @@ def jsonify_view(f):
             msg, status_code, kwargs = res
             return js(msg, status_code, **kwargs)        
         return js(msg, status_code)
+    return decorated
+
+
+def require_json_validator(f):
+
+    @wraps(f)
+    def decorated(data, *args, **kwargs):
+        if not data:
+            raise ValidationError('JSON payload required.')
+        return f(data, *args, **kwargs)
     return decorated
