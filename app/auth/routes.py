@@ -17,14 +17,16 @@ from app.auth.validators import (validate_confirm_registration_data,
                                  validate_login, validate_registration_data)
 from app.db import db
 from app.common import js, succ_status
+from app.common.decorators import jsonify_view
 from app.common.token import decode_token, encode_token
 
 
 @auth.route('/registration', methods=['POST'])
+@jsonify_view
 def registration():
     data = request.get_json()
 
-    message, status_code = validate_registration_data(data=data)
+    validate_registration_data(data=data)
 
     payload = {'email': data['email'], 'password': data['password']}
     token = encode_token(
@@ -32,7 +34,7 @@ def registration():
 
     send_reg_confirm_mail(recipient=data['email'], token=token.decode('utf-8'))
 
-    return js('Confirmation email has been sent.', 201)
+    return 'Confirmation email has been sent.', 201
 
 
 @auth.route('/registration/confirm', methods=['GET'])
@@ -61,6 +63,7 @@ def confirm_registration():
 
 
 @auth.route('/registration', methods=['DELETE'])
+@jsonify_view
 @token_required
 def cancel_registration(current_user):
     payload = {'public_id': current_user.public_id}
@@ -71,7 +74,7 @@ def cancel_registration(current_user):
     send_cancel_reg_confirm_email(
         recipient=current_user.email, token=token.decode('utf-8'))
 
-    return js('Confirmation email has been sent.', 202)
+    return 'Confirmation email has been sent.', 202
 
 
 @auth.route('/registration/cancel/confirm', methods=['GET'])
@@ -124,12 +127,14 @@ def login():
 
 
 @auth.route('/verify-token', methods=['GET'])
+@jsonify_view
 @token_required
 def token_valid(self):
-    return js('Token valid.')
+    return 'Token valid.'
 
 
 @auth.route('/logout', methods=['POST'])
+@jsonify_view
 @token_required
 def logout(current_user):
     """blacklist token"""
