@@ -27,8 +27,8 @@ def jsonify_view(f):
 def require_json_validator(f):
 
     @wraps(f)
-    def decorated(*args, **kwargs):
-        if not kwargs.get('data'):
+    def decorated(data, *args, **kwargs):
+        if not data:
             raise ValidationError('JSON payload required.')
-        return f(*args, **kwargs)
+        return f(data, *args, **kwargs)
     return decorated

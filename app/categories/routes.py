@@ -20,7 +20,7 @@ from app.db import db
 def create_category(current_user):
     data = request.get_json()
 
-    validate_create_category_data(user=current_user, data=data)
+    validate_create_category_data(data=data, user=current_user)
 
     title = data.get('title')
     description = data.get('description')
