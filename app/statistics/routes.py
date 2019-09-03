@@ -4,11 +4,11 @@ from dicttoxml import dicttoxml
 
 from app.auth.decorators import token_required
 from app.categories.models import Category
+from app.common import js, timestamp2datetime
+from app.common.params import get_param_from, get_param_to
 from app.statistics import statistics_blueprint
 from app.statistics.helpers import get_statistics as get_statistics_
 from app.statistics.mail import send_statistics_export_mail
-from app.utils import js, timestamp2datetime
-from app.utils.params import get_param_from, get_param_to
 
 
 @statistics_blueprint.route('', methods=['GET'])

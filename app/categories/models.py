@@ -1,7 +1,7 @@
 from datetime import datetime
 
+from app.common import datetime2timestamp
 from app.db import db
-from app.utils import datetime2timestamp
 
 
 # TODO: find out how to add unique together constraint

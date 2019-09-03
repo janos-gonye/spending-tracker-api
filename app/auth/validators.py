@@ -1,8 +1,8 @@
 from time import time
 
 from app.auth.models import User
-from app.utils import succ_status
-from app.utils.validators import validate_email, validate_password
+from app.common import succ_status
+from app.common.validators import validate_email, validate_password
 
 
 def validate_registration_data(data):

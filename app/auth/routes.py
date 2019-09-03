@@ -16,8 +16,8 @@ from app.auth.models import User
 from app.auth.validators import (validate_confirm_registration_data,
                                  validate_login, validate_registration_data)
 from app.db import db
-from app.utils import js, succ_status
-from app.utils.token import decode_token, encode_token
+from app.common import js, succ_status
+from app.common.token import decode_token, encode_token
 
 
 @auth.route('/registration', methods=['POST'])

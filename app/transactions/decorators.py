@@ -2,8 +2,8 @@ from functools import wraps
 
 from flask import request
 
+from app.common import js
 from app.transactions.models import Transaction
-from app.utils import js
 
 
 def get_trans_or_404(f):

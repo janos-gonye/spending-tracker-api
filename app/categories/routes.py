@@ -9,8 +9,8 @@ from app.categories.decorators import get_category_or_404
 from app.categories.models import Category
 from app.categories.validators import (validate_create_category_data,
                                        validate_update_category_data)
+from app.common import js, key_exists, succ_status
 from app.db import db
-from app.utils import js, key_exists, succ_status
 
 
 @cat_blueprint.route('', methods=['POST'])

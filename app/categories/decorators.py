@@ -4,7 +4,7 @@ from urllib.parse import unquote
 from flask import request, url_for
 
 from app.categories.models import Category
-from app.utils import js
+from app.common import js
 
 
 def get_category_or_404(f):

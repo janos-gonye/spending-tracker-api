@@ -4,8 +4,8 @@ from time import time
 from flask import request
 
 from app.auth.models import User
-from app.utils import js
-from app.utils.token import decode_token
+from app.common import js
+from app.common.token import decode_token
 
 
 def token_required(f=None, min_role=10):

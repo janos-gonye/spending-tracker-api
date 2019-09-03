@@ -1,7 +1,7 @@
 import time
 
+from app.common import is_float, is_int, is_timestamp, key_exists
 from app.transactions.models import Transaction
-from app.utils import is_float, is_int, is_timestamp, key_exists
 
 MIN_COMMENT_LEN = Transaction.MIN_COMMENT_LEN
 MAX_COMMENT_LEN = Transaction.MAX_COMMENT_LEN

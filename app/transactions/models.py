@@ -1,8 +1,8 @@
 from datetime import datetime
 
 from app.categories.models import Category
+from app.common import datetime2timestamp
 from app.db import db
-from app.utils import datetime2timestamp
 
 
 class Transaction(db.Model):

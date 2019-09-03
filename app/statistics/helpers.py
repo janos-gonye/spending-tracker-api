@@ -1,6 +1,6 @@
 from app.categories.models import Category
+from app.common import datetime2timestamp
 from app.transactions.models import Transaction
-from app.utils import datetime2timestamp
 
 
 def min_(iterable):
