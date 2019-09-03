@@ -42,7 +42,7 @@ def create_transaction(current_user, cat):
         db.session.rollback()
         return 'Unternal Server Error.', 500
 
-    return new_trans.as_dict(), 201, {'key': 'transactions'}
+    return new_trans.as_dict(), 201, {'key': 'transaction'}
 
 
 @trans_blueprint.route('', methods=['GET'])
@@ -65,7 +65,7 @@ def get_transactions(current_user, cat):
     trans_s = filter(
         lambda t: from_ <= datetime2timestamp(t.processed_at) <= to, trans_s)
 
-    return [trans.as_dict() for trans in trans_s], 200, 'transactions'
+    return [trans.as_dict() for trans in trans_s], 200, {'key': 'transactions'}
 
 
 @trans_blueprint.route('/<int:trans_id>', methods=['GET'])
@@ -74,7 +74,7 @@ def get_transactions(current_user, cat):
 @get_category_or_404
 @get_trans_or_404
 def get_transaction(current_user, cat, trans):
-    return trans.as_dict(), 200, {'key': 'transactions'}
+    return trans.as_dict(), 200, {'key': 'transaction'}
 
 
 @trans_blueprint.route('/<int:trans_id>', methods=['PATCH'])
@@ -111,7 +111,7 @@ def update_transaction(current_user, cat, trans):
         db.session.rollback()
         return 'Internal Server Error.', 500
 
-    return trans.as_dict(), 200, {'key': 'transactions'}
+    return trans.as_dict(), 200, {'key': 'transaction'}
 
 
 @trans_blueprint.route('/<int:trans_id>', methods=['DELETE'])
@@ -127,4 +127,4 @@ def delete_transaction(current_user, cat, trans):
         db.session.rollback()
         return 'Internal Server Error', 500
 
-    return trans.as_dict(), 200, {'key': 'transactions'}
+    return trans.as_dict(), 200, {'key': 'transaction'}

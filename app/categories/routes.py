@@ -47,7 +47,7 @@ def create_category(current_user):
 def get_categories(current_user):
     cats = Category.query.filter_by(user_id=current_user.id).all()
     cats.sort(key=lambda c: c.history)
-    return [cat.as_dict() for cat in cats], 200, 'categories'
+    return [cat.as_dict() for cat in cats], 200, {'key': 'categories'}
 
 
 @cat_blueprint.route('<int:cat_id>', methods=['GET'])
