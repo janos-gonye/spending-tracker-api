@@ -16,7 +16,7 @@ def jsonify_view(f):
         kwargs = {}
         if length == 2:
             msg, status_code = res
-        if length == 3:
+        elif length == 3:
             msg, status_code, kwargs = res
         else:
             msg, status_code = res, 200
