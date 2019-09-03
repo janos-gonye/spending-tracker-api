@@ -7,10 +7,10 @@ from app.auth.decorators import token_required
 from app.categories import cat_blueprint
 from app.categories.decorators import get_category_or_404
 from app.categories.models import Category
-from app.categories.validators import validate_create_category_data
-from app.categories.validators import validate_update_category_data
+from app.categories.validators import (validate_create_category_data,
+                                       validate_update_category_data)
 from app.db import db
-from app.utils import js, succ_status, key_exists
+from app.utils import js, key_exists, succ_status
 
 
 @cat_blueprint.route('', methods=['POST'])

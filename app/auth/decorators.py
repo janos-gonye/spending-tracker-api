@@ -1,4 +1,4 @@
-from functools import wraps, partial
+from functools import partial, wraps
 from time import time
 
 from flask import request

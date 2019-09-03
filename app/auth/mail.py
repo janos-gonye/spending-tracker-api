@@ -1,4 +1,5 @@
-from flask import url_for, current_app as app, request
+from flask import current_app as app
+from flask import request, url_for
 from flask_mail import Message
 
 from app.mail import mail

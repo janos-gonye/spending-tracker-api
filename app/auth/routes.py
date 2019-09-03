@@ -1,24 +1,23 @@
+from time import time
 from uuid import uuid4
 # Use uuid4 bacause uuid1() may compromise privacy since it creates a UUID
 # containing the computer’s network address. uuid4() creates a random UUID.
-from time import time
 
-from flask import jsonify, request, current_app as app
+from flask import current_app as app
+from flask import jsonify, request
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.auth import auth
 from app.auth.decorators import token_required
-from app.auth.mail import send_reg_confirm_mail
-from app.auth.mail import send_reg_confirmed_mail
-from app.auth.mail import send_cancel_reg_confirm_email
-from app.auth.mail import send_cancel_reg_confirmed_email
+from app.auth.mail import (send_cancel_reg_confirm_email,
+                           send_cancel_reg_confirmed_email,
+                           send_reg_confirm_mail, send_reg_confirmed_mail)
 from app.auth.models import User
-from app.auth.validators import validate_confirm_registration_data
-from app.auth.validators import validate_login
-from app.auth.validators import validate_registration_data
+from app.auth.validators import (validate_confirm_registration_data,
+                                 validate_login, validate_registration_data)
 from app.db import db
 from app.utils import js, succ_status
-from app.utils.token import encode_token, decode_token
+from app.utils.token import decode_token, encode_token
 
 
 @auth.after_request

@@ -1,8 +1,7 @@
 from functools import wraps
 from urllib.parse import unquote
 
-from flask import request
-from flask import url_for
+from flask import request, url_for
 
 from app.categories.models import Category
 from app.utils import js

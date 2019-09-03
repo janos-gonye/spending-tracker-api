@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from app.db import db
 from app.categories.models import Category
+from app.db import db
 from app.utils import datetime2timestamp
 
 

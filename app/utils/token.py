@@ -2,8 +2,7 @@ from time import time
 from uuid import uuid4
 
 from flask import current_app as app
-
-from jwt import encode, decode
+from jwt import decode, encode
 from jwt.exceptions import PyJWTError  # base class of all pyjwt exceptions
 
 

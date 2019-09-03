@@ -9,15 +9,10 @@ from app.db import db
 from app.transactions import trans_blueprint
 from app.transactions.decorators import get_trans_or_404
 from app.transactions.models import Transaction
-from app.transactions.validators import validate_create_trans_data
-from app.transactions.validators import validate_update_trans_data
-from app.utils import (
-    js,
-    succ_status,
-    key_exists,
-    timestamp2datetime,
-    datetime2timestamp
-)
+from app.transactions.validators import (validate_create_trans_data,
+                                         validate_update_trans_data)
+from app.utils import (datetime2timestamp, js, key_exists, succ_status,
+                       timestamp2datetime)
 from app.utils.params import get_param_from, get_param_to
 
 

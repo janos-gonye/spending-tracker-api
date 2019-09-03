@@ -1,7 +1,6 @@
 from app.categories.models import Category
 from app.utils import key_exists
 
-
 MIN_TITLE_LEN = Category.MIN_TITLE_LEN
 MAX_TITLE_LEN = Category.MAX_TITLE_LEN
 MIN_DESCRIPTION_LEN = Category.MIN_DESCRIPTION_LEN

@@ -1,6 +1,4 @@
-from datetime import datetime
-from datetime import timezone
-
+from datetime import datetime, timezone
 from re import compile
 
 from flask import jsonify
