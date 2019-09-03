@@ -1,6 +1,7 @@
 import time
 
 from app.common import is_float, is_int, is_timestamp, key_exists
+from app.common.decorators import require_json_validator
 from app.common.exceptions import ValidationError
 from app.transactions.models import Transaction
 
@@ -8,9 +9,8 @@ MIN_COMMENT_LEN = Transaction.MIN_COMMENT_LEN
 MAX_COMMENT_LEN = Transaction.MAX_COMMENT_LEN
 
 
+@require_json_validator
 def validate_create_trans_data(data):
-    if not data:
-        raise ValidationError('JSON payload required.')
 
     # use this as data.get(...) would give None
     # wether key is not in JSON or key's value is NULL
@@ -44,9 +44,8 @@ def validate_create_trans_data(data):
                 MIN_COMMENT_LEN, MAX_COMMENT_LEN))
 
 
+@require_json_validator
 def validate_update_trans_data(data):
-    if not data:
-        raise ValidationError('JSON payload required.')
 
     # use this as data.get(...) would give None
     # wether key is not in JSON or key's value is NULL

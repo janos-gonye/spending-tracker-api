@@ -1,5 +1,6 @@
 from app.categories.models import Category
 from app.common import key_exists
+from app.common.decorators import require_json_validator
 from app.common.exceptions import ValidationError
 
 MIN_TITLE_LEN = Category.MIN_TITLE_LEN
@@ -8,9 +9,8 @@ MIN_DESCRIPTION_LEN = Category.MIN_DESCRIPTION_LEN
 MAX_DESCRIPTION_LEN = Category.MAX_DESCRIPTION_LEN
 
 
+@require_json_validator
 def validate_create_category_data(user, data):
-    if not data:
-        raise ValidationError('JSON payload required.')
 
     # use this as data.get(...) would give None
     # whether key is not in JSON or key's value is null
@@ -50,9 +50,8 @@ def validate_create_category_data(user, data):
         raise ValidationError('Title and parent_id must be unique together.')
 
 
+@require_json_validator
 def validate_update_category_data(data, user, cat_to_change):
-    if not data:
-        raise ValidationError('JSON payload required.')
 
     # use this as data.get(...) would give None
     # whether key is not in JSON or key's value is null

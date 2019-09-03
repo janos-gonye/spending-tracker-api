@@ -2,14 +2,14 @@ from time import time
 
 from app.auth.models import User
 from app.common import succ_status
+from app.common.decorators import require_json_validator
 from app.common.exceptions import ValidationError
 from app.common.validators import validate_email, validate_password
 
 
+@require_json_validator
 def validate_registration_data(data):
     """doesn't check if user already registered"""
-    if not data:
-        raise ValidationError('JSON payload required')
 
     email = data.get('email')
     password = data.get('password')
@@ -56,9 +56,8 @@ def already_registered(email):
     return bool(User.query.filter_by(email=email).first())
 
 
+@require_json_validator
 def validate_login(data):
-    if not data:
-        raise ValidationError('JSON payload required.')
 
     email = data.get('email')
     password = data.get('password')
