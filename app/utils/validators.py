@@ -7,6 +7,7 @@ def validate_password(password, min_length=6, max_length=50,
                       contain_lower=True, contain_upper=True,
                       contain_number=True):
     length = len(password)
+
     if length < min_length or length > max_length or \
        contain_lower and not re.search(r"[a-z]", password) or \
        contain_upper and not re.search(r"[A-Z]", password) or \

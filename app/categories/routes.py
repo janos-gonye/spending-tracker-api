@@ -17,23 +17,28 @@ from app.utils import js, key_exists, succ_status
 @token_required
 def create_category(current_user):
     data = request.get_json()
+
     message, status_code = validate_create_category_data(user=current_user,
                                                          data=data)
     if not succ_status(code=status_code):
         return js(message, status_code)
+
     title = data.get('title')
     description = data.get('description')
     parent_id = data.get('parent_id')
+
     new_cat = Category(title=title,
                        description=description,
                        user_id=current_user.id,
                        parent_id=parent_id)
+
     try:
         db.session.add(new_cat)
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
         return js('Internal Server Error.', 500)
+
     return js(new_cat.as_dict(), 201, key='category')
 
 
@@ -62,24 +67,29 @@ def update_category(current_user, cat):
                                                          cat_to_change=cat)
     if not succ_status(code=status_code):
         return js(message, status_code)
+
     title = data.get('title')
     description_in_json, description = key_exists(data=data, key='description')
     parent_id_in_json, parent_id = key_exists(data=data, key='parent_id')
+
     # if any of them changed
     if cat.title != title or \
        description_in_json and cat.description != description or \
        parent_id_in_json and cat.parent_id != parent_id:
         cat.updated_at = datetime.utcnow()
+
     cat.title = title if title else cat.title
     if description_in_json:
         cat.description = description
     if parent_id_in_json:
         cat.parent_id = parent_id
+
     try:
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
         return js('Internal Server Error', 500)
+
     return js(cat.as_dict(), 200, 'category')
 
 
@@ -93,4 +103,5 @@ def delete_category(current_user, cat):
     except SQLAlchemyError:
         db.session.rollback()
         return js('Internal Server Error', 500)
+
     return js(cat.as_dict(), 200, 'category')

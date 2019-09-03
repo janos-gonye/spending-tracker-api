@@ -11,6 +11,7 @@ def send_reg_confirm_mail(recipient, token):
     """						  # remove the first '/' character
     link = request.url_root + \
         url_for('auth.confirm_registration')[1:] + '?token=%s' % token
+
     msg = Message(
         subject='Spending Tracker - Activate your registration',
         recipients=[recipient],
@@ -72,6 +73,7 @@ def send_cancel_reg_confirm_email(recipient, token):
     # remove the first '/' character
     link = request.url_root + \
         url_for('auth.confirm_cancel_registration')[1:] + '?token=%s' % token
+
     msg = Message(
         subject=('Spending Tracker - Confirm cancellation of your Spending'
                  'Tracker account.'),
