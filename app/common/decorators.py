@@ -1,14 +1,17 @@
 from functools import wraps
 
 from app.common import js
-from app.common.exceptions import ValidationError
+from app.common.exceptions import JsonValidationError, ValidationError
 
 
 def jsonify_view(f):
 
     @wraps(f)
     def decorated(*args, **kwargs):
-        res = f(*args, **kwargs)
+        try:
+            res = f(*args, **kwargs)
+        except ValidationError as err:
+            raise JsonValidationError(err.message, err.status_code)
         length = len(res)
         kwargs = {}
         if length == 2:
