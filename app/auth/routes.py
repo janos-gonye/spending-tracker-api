@@ -20,18 +20,6 @@ from app.utils import js, succ_status
 from app.utils.token import decode_token, encode_token
 
 
-@auth.after_request
-def no_cache(response):
-    """
-    Add headers to both force latest IE rendering engine or Chrome Frame,
-    and also to cache the rendered page for 10 minutes.
-    """
-    response.headers["Pragma"] = "no-cache"
-    response.headers["Expires"] = "0"
-    response.headers['Cache-Control'] = 'public, max-age=0'
-    return response
-
-
 @auth.route('/registration', methods=['POST'])
 def registration():
     data = request.get_json()
