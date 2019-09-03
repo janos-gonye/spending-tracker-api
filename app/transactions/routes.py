@@ -22,10 +22,7 @@ from app.transactions.validators import (validate_create_trans_data,
 def create_transaction(current_user, cat):
     data = request.get_json()
 
-    message, status_code = validate_create_trans_data(data=data)
-
-    if not succ_status(code=status_code):
-        return js(message, status_code)
+    validate_create_trans_data(data=data)
 
     amount = data.get('amount')
     processed_at = data.get('processed_at')
@@ -82,10 +79,7 @@ def get_transaction(current_user, cat, trans):
 @get_trans_or_404
 def update_transaction(current_user, cat, trans):
     data = request.get_json()
-    message, status_code = validate_update_trans_data(data=data)
-
-    if not succ_status(code=status_code):
-        return js(message, status_code)
+    validate_update_trans_data(data=data)
 
     amount_in_json, amount = key_exists(data=data, key='amount')
     processed_at_in_json, processed_at = key_exists(
