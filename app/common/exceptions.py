@@ -10,3 +10,8 @@ class ValidationError(Error):
         Exception.__init__(self)
         self.message = message
         self.status_code = status_code
+
+
+class JsonValidationError(ValidationError):
+    """Exception raised when JSON data send by client is invalid."""
+    pass
