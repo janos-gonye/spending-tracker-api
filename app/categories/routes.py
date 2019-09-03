@@ -9,7 +9,7 @@ from app.categories.decorators import get_category_or_404
 from app.categories.models import Category
 from app.categories.validators import (validate_create_category_data,
                                        validate_update_category_data)
-from app.common import key_exists, succ_status
+from app.common import key_exists
 from app.common.decorators import jsonify_view
 from app.db import db
 

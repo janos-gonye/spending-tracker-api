@@ -5,8 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from app.auth.decorators import token_required
 from app.categories.decorators import get_category_or_404
-from app.common import (datetime2timestamp, js, key_exists, succ_status,
-                        timestamp2datetime)
+from app.common import datetime2timestamp, key_exists, timestamp2datetime
 from app.common.decorators import jsonify_view
 from app.common.params import get_param_from, get_param_to
 from app.db import db

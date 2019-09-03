@@ -1,7 +1,6 @@
 from time import time
 
 from app.auth.models import User
-from app.common import succ_status
 from app.common.decorators import require_json_validator
 from app.common.exceptions import ValidationError
 from app.common.validators import validate_email, validate_password

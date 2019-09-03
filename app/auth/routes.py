@@ -16,7 +16,6 @@ from app.auth.models import User
 from app.auth.validators import (validate_confirm_registration_data,
                                  validate_login, validate_registration_data)
 from app.db import db
-from app.common import js, succ_status
 from app.common.decorators import jsonify_view
 from app.common.token import decode_token, encode_token
 

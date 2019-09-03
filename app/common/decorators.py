@@ -9,14 +9,14 @@ def jsonify_view(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         res = f(*args, **kwargs)
-        l = len(res)
+        length = len(res)
         kwargs = {}
-        if l == 1:
-            msg, status_code = res, 200
-        if l == 2:
+        if length == 2:
             msg, status_code = res
-        if l == 3:
+        if length == 3:
             msg, status_code, kwargs = res
+        else:
+            msg, status_code = res, 200
         return js(msg, status_code, **kwargs)
     return decorated
 
