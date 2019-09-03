@@ -9,11 +9,13 @@ from app.categories.decorators import get_category_or_404
 from app.categories.models import Category
 from app.categories.validators import (validate_create_category_data,
                                        validate_update_category_data)
-from app.common import js, key_exists, succ_status
+from app.common import key_exists, succ_status
+from app.common.decorators import jsonify_view
 from app.db import db
 
 
 @cat_blueprint.route('', methods=['POST'])
+@jsonify_view
 @token_required
 def create_category(current_user):
     data = request.get_json()
@@ -34,27 +36,30 @@ def create_category(current_user):
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return js('Internal Server Error.', 500)
+        return 'Internal Server Error.', 500
 
-    return js(new_cat.as_dict(), 201, key='category')
+    return new_cat.as_dict(), 201, {'key': 'category'}
 
 
 @cat_blueprint.route('', methods=['GET'])
+@jsonify_view
 @token_required
 def get_categories(current_user):
     cats = Category.query.filter_by(user_id=current_user.id).all()
     cats.sort(key=lambda c: c.history)
-    return js([cat.as_dict() for cat in cats], 200, 'categories')
+    return [cat.as_dict() for cat in cats], 200, 'categories'
 
 
 @cat_blueprint.route('<int:cat_id>', methods=['GET'])
+@jsonify_view
 @token_required
 @get_category_or_404
 def get_category(current_user, cat):
-    return js(cat.as_dict(), 200, 'category')
+    return cat.as_dict(), 200, {'key': 'category'}
 
 
 @cat_blueprint.route('<int:cat_id>', methods=['PATCH'])
+@jsonify_view
 @token_required
 @get_category_or_404
 def update_category(current_user, cat):
@@ -82,12 +87,13 @@ def update_category(current_user, cat):
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return js('Internal Server Error', 500)
+        return 'Internal Server Error', 500
 
-    return js(cat.as_dict(), 200, 'category')
+    return cat.as_dict(), 200, {'key': 'category'}
 
 
 @cat_blueprint.route('/<int:cat_id>', methods=['DELETE'])
+@jsonify_view
 @token_required
 @get_category_or_404
 def delete_category(current_user, cat):
@@ -96,6 +102,6 @@ def delete_category(current_user, cat):
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return js('Internal Server Error', 500)
+        return 'Internal Server Error', 500
 
-    return js(cat.as_dict(), 200, 'category')
+    return cat.as_dict(), 200, {'key': 'category'}

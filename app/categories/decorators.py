@@ -4,7 +4,6 @@ from urllib.parse import unquote
 from flask import request, url_for
 
 from app.categories.models import Category
-from app.common import js
 
 
 def get_category_or_404(f):
@@ -19,11 +18,11 @@ def get_category_or_404(f):
             if param == '*' and request.path == special_path\
                and request.method == "GET":
                 return f(current_user, '__all__')
-            return js('Category not found.', 404)
+            return 'Category not found.', 404
         try:
             cat = Category.query.filter_by(
                 id=param, user_id=current_user.id)[0]
         except IndexError:
-            return js('Category not found.', 404)
+            return 'Category not found.', 404
         return f(current_user, cat)
     return decorated
