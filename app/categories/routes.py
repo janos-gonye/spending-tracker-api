@@ -18,10 +18,7 @@ from app.db import db
 def create_category(current_user):
     data = request.get_json()
 
-    message, status_code = validate_create_category_data(user=current_user,
-                                                         data=data)
-    if not succ_status(code=status_code):
-        return js(message, status_code)
+    validate_create_category_data(user=current_user, data=data)
 
     title = data.get('title')
     description = data.get('description')
@@ -62,11 +59,8 @@ def get_category(current_user, cat):
 @get_category_or_404
 def update_category(current_user, cat):
     data = request.get_json()
-    message, status_code = validate_update_category_data(data=data,
-                                                         user=current_user,
-                                                         cat_to_change=cat)
-    if not succ_status(code=status_code):
-        return js(message, status_code)
+    validate_update_category_data(data=data, user=current_user,
+                                  cat_to_change=cat)
 
     title = data.get('title')
     description_in_json, description = key_exists(data=data, key='description')
