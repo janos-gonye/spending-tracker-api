@@ -19,18 +19,15 @@ def encode_token(payload, lifetime=3600, from_=None):
     """
     if not from_:
         from_ = time()
-
     if payload.get('expiresAt'):
         raise Error(
             "Programming Error: 'Payload' dict already has key 'expiresAt'")
-
     if lifetime:
         payload['expiresAt'] = from_ + lifetime
     else:
         # add some randomness, even if token never expires
         # otherwise same user, same password input would cause same output
         payload['randomness'] = str(uuid4())
-
     return encode(payload, str(app.secret_key))
 
 
