@@ -4,7 +4,7 @@ from uuid import uuid4
 # containing the computer’s network address. uuid4() creates a random UUID.
 
 from flask import current_app as app
-from flask import jsonify, request
+from flask import request
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.auth import auth
@@ -111,6 +111,7 @@ def confirm_cancel_registration():
 
 
 @auth.route('/login', methods=['POST'])
+@jsonify_view
 def login():
     data = request.get_json()
 
@@ -122,7 +123,7 @@ def login():
     token = encode_token(
         payload=payload, lifetime=app.config['LOGIN_TOKEN_LIFETIME'])
 
-    return jsonify({'token': token.decode('utf-8')}), 201
+    return None, 201, {'token': token.decode('utf-8')}
 
 
 @auth.route('/verify-token', methods=['GET'])

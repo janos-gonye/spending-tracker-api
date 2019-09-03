@@ -6,7 +6,10 @@ from flask import jsonify
 
 def js(message='', status_code=200, key='message', **kwargs):
     """create json answer with status_code"""
-    json = {key: message}
+    if message:
+        json = {key: message}
+    else:
+        json = {}
     for key_, item in kwargs.items():
         assert key_ != key
         json[key_] = item
