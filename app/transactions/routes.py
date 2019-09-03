@@ -7,6 +7,7 @@ from app.auth.decorators import token_required
 from app.categories.decorators import get_category_or_404
 from app.common import (datetime2timestamp, js, key_exists, succ_status,
                         timestamp2datetime)
+from app.common.decorators import jsonify_view
 from app.common.params import get_param_from, get_param_to
 from app.db import db
 from app.transactions import trans_blueprint
@@ -17,6 +18,7 @@ from app.transactions.validators import (validate_create_trans_data,
 
 
 @trans_blueprint.route('', methods=['POST'])
+@jsonify_view
 @token_required
 @get_category_or_404
 def create_transaction(current_user, cat):
@@ -38,12 +40,13 @@ def create_transaction(current_user, cat):
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return js('Unternal Server Error.', 500)
+        return 'Unternal Server Error.', 500
 
-    return js(new_trans.as_dict(), 201, key='transaction')
+    return new_trans.as_dict(), 201, {'key': 'transactions'}
 
 
 @trans_blueprint.route('', methods=['GET'])
+@jsonify_view
 @token_required
 @get_category_or_404
 def get_transactions(current_user, cat):
@@ -51,7 +54,7 @@ def get_transactions(current_user, cat):
         from_ = get_param_from()
         to = get_param_to()
     except ValueError as err:
-        return js(str(err), 400)
+        return str(err), 400
     if cat == '__all__':
         trans_s = []
         for cat in current_user.categories:
@@ -62,18 +65,20 @@ def get_transactions(current_user, cat):
     trans_s = filter(
         lambda t: from_ <= datetime2timestamp(t.processed_at) <= to, trans_s)
 
-    return js([trans.as_dict() for trans in trans_s], 200, 'transactions')
+    return [trans.as_dict() for trans in trans_s], 200, 'transactions'
 
 
 @trans_blueprint.route('/<int:trans_id>', methods=['GET'])
+@jsonify_view
 @token_required
 @get_category_or_404
 @get_trans_or_404
 def get_transaction(current_user, cat, trans):
-    return js(trans.as_dict(), 200, 'transaction')
+    return trans.as_dict(), 200, {'key': 'transactions'}
 
 
 @trans_blueprint.route('/<int:trans_id>', methods=['PATCH'])
+@jsonify_view
 @token_required
 @get_category_or_404
 @get_trans_or_404
@@ -104,12 +109,13 @@ def update_transaction(current_user, cat, trans):
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return js('Internal Server Error.', 500)
+        return 'Internal Server Error.', 500
 
-    return js(trans.as_dict(), 200, 'transaction')
+    return trans.as_dict(), 200, {'key': 'transactions'}
 
 
 @trans_blueprint.route('/<int:trans_id>', methods=['DELETE'])
+@jsonify_view
 @token_required
 @get_category_or_404
 @get_trans_or_404
@@ -119,6 +125,6 @@ def delete_transaction(current_user, cat, trans):
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
-        return js('Internal Server Error', 500)
+        return 'Internal Server Error', 500
 
-    return js(trans.as_dict(), 200, 'transaction')
+    return trans.as_dict(), 200, {'key': 'transactions'}
