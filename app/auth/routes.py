@@ -26,9 +26,6 @@ def registration():
 
     message, status_code = validate_registration_data(data=data)
 
-    if not succ_status(code=status_code):
-        return js(message, status_code)
-
     payload = {'email': data['email'], 'password': data['password']}
     token = encode_token(
         payload=payload, lifetime=app.config['REGISTRATION_TOKEN_LIFETIME'])
@@ -46,10 +43,7 @@ def confirm_registration():
         return 'Token missing.', 400
 
     data = decode_token(token)
-    message, status_code = validate_confirm_registration_data(data=data)
-
-    if not succ_status(code=status_code):
-        return message, status_code
+    validate_confirm_registration_data(data=data)
 
     new_user = User(public_id=uuid4(),
                     email=data['email'], password=data['password'])
@@ -118,10 +112,7 @@ def confirm_cancel_registration():
 def login():
     data = request.get_json()
 
-    message, status_code = validate_login(data)
-
-    if not succ_status(code=status_code):
-        return js(message, status_code)
+    validate_login(data)
 
     user = User.query.filter_by(email=data['email']).first()
 
