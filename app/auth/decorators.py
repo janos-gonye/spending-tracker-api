@@ -22,14 +22,12 @@ def token_required(f=None, min_role=10):
     @wraps(f)
     def decorated(*args, **kwargs):
         # Authorization: Bearer <token>
-
         token = request.headers.get('Authorization')
 
         if not token:
             return js('Token missing.', 401)
 
-        token = token[7:]  # cut of <Bearer >
-
+        token = token[7:]  # chop off <Bearer >
         payload = decode_token(token)
         if not payload:
             return js('Invalid token.', 401)
