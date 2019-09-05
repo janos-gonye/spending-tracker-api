@@ -6,7 +6,9 @@ from flask import jsonify
 
 def js(message='', status_code=200, key='message', **kwargs):
     """create json answer with status_code"""
-    if message:
+    # Be careful, only 'if message' is not enough, becase a message can
+    # be a boolean or interable value, too.
+    if message is not None:
         json = {key: message}
     else:
         json = {}
