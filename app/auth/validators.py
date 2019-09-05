@@ -19,16 +19,8 @@ def validate_registration_data(data):
     if not email:
         raise ValidationError('Email missing.')
 
-    if not password:
-        raise ValidationError('Password missing.')
-
-    if not validate_email(email):
-        raise ValidationError('Invalid email address.')
-
-    if not validate_password(password):
-        raise ValidationError((
-            "Password\'s length must be at least 6 characters. "
-            "Must contain number, upper and lower case letters."))
+    validate_email(data)
+    validate_password(data)
 
     if email and already_registered(email=email):
         raise ValidationError('Email address already registered.')
@@ -68,3 +60,13 @@ def validate_login(data):
 
     if not user or not user.check_password(password):
         raise ValidationError('Invalid credentials.', 401)
+
+
+@require_json_validator
+def validate_change_password(data):
+    password = data.get('password')
+
+    if not password:
+        raise ValidationError('Password missing.')
+
+    validate_password(password)
