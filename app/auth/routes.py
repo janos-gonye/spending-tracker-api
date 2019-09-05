@@ -13,11 +13,12 @@ from app.auth.mail import (send_cancel_reg_confirm_email,
                            send_cancel_reg_confirmed_email,
                            send_reg_confirm_mail, send_reg_confirmed_mail)
 from app.auth.models import User
-from app.auth.validators import (validate_confirm_registration_data,
+from app.auth.validators import (validate_change_password,
+                                 validate_confirm_registration_data,
                                  validate_login, validate_registration_data)
-from app.db import db
 from app.common.decorators import jsonify_view
 from app.common.token import decode_token, encode_token
+from app.db import db
 
 
 @auth.route('/registration', methods=['POST'])
@@ -139,3 +140,22 @@ def token_valid(self):
 def logout(current_user):
     """blacklist token"""
     pass
+
+
+@auth.route('/change-password', methods=['POST'])
+@jsonify_view
+@token_required
+def change_password(current_user):
+    data = request.get_json()
+
+    validate_change_password(data, current_user)
+
+    new_password = data['new_password']
+
+    try:
+        current_user.set_password(new_password)
+        db.session.commit()
+        return 'Password changed.', 200
+    except SQLAlchemyError:
+        db.session.rollback()
+        return 'Internal Server Error.', 500
