@@ -63,10 +63,17 @@ def validate_login(data):
 
 
 @require_json_validator
-def validate_change_password(data):
-    password = data.get('password')
+def validate_change_password(data, user):
+    old_password = data.get('old_password')
+    new_password = data.get('new_password')
 
-    if not password:
-        raise ValidationError('Password missing.')
+    if not old_password:
+        raise ValidationError('Old password missing.')
 
-    validate_password(password)
+    if not new_password:
+        raise ValidationError('New password missing.')
+
+    if not user.check_password(old_password):
+        raise ValidationError('Invalid credentials.', 401)
+
+    validate_password(new_password)
