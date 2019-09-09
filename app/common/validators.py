@@ -22,3 +22,25 @@ def validate_password(password, min_length=6, max_length=50,
 def validate_email(email):
     if not bool(re.match(EMAIL_REGEX, email)):
         raise ValidationError('Invalid email address.')
+
+
+def validate_int(x, name='value'):
+    if isinstance(x, int):
+        return x
+    except ValueError:
+        raise ValidationError(f"{name} is not an integer.")
+
+
+def validate_natural_number(x, name='value'):
+    try:
+        validate_int(x)
+        if not str(x).isdigit():
+            raise ValueError()
+    except (ValidationError, ValueError):
+        raise ValidationError(f"{name} is not a valid natural number.")
+
+
+def validate_bool(x, name='value'):
+    if isinstance(x, bool):
+        return x
+    raise ValidationError(f"{name} is not a boolean value.")

@@ -100,3 +100,18 @@ def validate_update_category_data(data, user, cat_to_change):
         if cat is not cat_to_change:
             raise ValidationError(
                 'Title and parent_id must be unique together.')
+
+
+@require_json_validator
+def validate_merge_categories(data):
+    subject_in_json, subject_id = key_exists(data=data, key='subject_id')
+    target_in_json, target_id = key_exists(data=data, key='target_id')
+    remove_merged_in_json, remove_merged = key_exists(data=data,
+                                                       key='remove_merged')
+
+    for key, name in (
+        (subject_in_json, 'Subject category id'),
+        (target_in_json, 'Target category id'),
+        (remove_merged_in_json, 'Remove merged flag')):
+        if not key:
+            raise ValidationError(f"{name} missing.")

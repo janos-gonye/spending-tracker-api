@@ -105,3 +105,11 @@ def delete_category(current_user, cat):
         return 'Internal Server Error', 500
 
     return cat.as_dict(), 200, {'key': 'category'}
+
+
+@cat_blueprint.route('/merge-categories', methods=['POST'])
+@jsonify_view
+@token_required
+def merge_categories(current_user):
+    data = request.get_json()
+    return 'Johnny', 201
