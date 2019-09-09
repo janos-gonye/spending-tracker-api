@@ -27,8 +27,7 @@ def validate_email(email):
 def validate_int(x, name='value'):
     if isinstance(x, int):
         return x
-    except ValueError:
-        raise ValidationError(f"{name} is not an integer.")
+    raise ValidationError(f"{name} is not an integer.")
 
 
 def validate_natural_number(x, name='value'):
@@ -36,6 +35,7 @@ def validate_natural_number(x, name='value'):
         validate_int(x)
         if not str(x).isdigit():
             raise ValueError()
+        return x
     except (ValidationError, ValueError):
         raise ValidationError(f"{name} is not a valid natural number.")
 

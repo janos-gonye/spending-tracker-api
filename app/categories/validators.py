@@ -2,6 +2,8 @@ from app.categories.models import Category
 from app.common import key_exists
 from app.common.decorators import require_json_validator
 from app.common.exceptions import ValidationError
+from app.common.validators import (validate_bool, validate_int,
+                                   validate_natural_number)
 
 MIN_TITLE_LEN = Category.MIN_TITLE_LEN
 MAX_TITLE_LEN = Category.MAX_TITLE_LEN
@@ -103,15 +105,29 @@ def validate_update_category_data(data, user, cat_to_change):
 
 
 @require_json_validator
-def validate_merge_categories(data):
+def validate_merge_categories(data, user):
     subject_in_json, subject_id = key_exists(data=data, key='subject_id')
     target_in_json, target_id = key_exists(data=data, key='target_id')
     remove_merged_in_json, remove_merged = key_exists(data=data,
                                                        key='remove_merged')
 
     for key, name in (
-        (subject_in_json, 'Subject category id'),
-        (target_in_json, 'Target category id'),
-        (remove_merged_in_json, 'Remove merged flag')):
+        (subject_in_json, "'subject_id'"),
+        (target_in_json, "'target_id'"),
+        (remove_merged_in_json, "'remove_merged'")):
         if not key:
             raise ValidationError(f"{name} missing.")
+
+    subject_id = validate_natural_number(subject_id, name="'subject_id")
+    target_id = validate_natural_number(target_id, name="'target_id")
+    remove_merged = validate_bool(remove_merged, "'remove_merged'")
+
+    subject = Category.query.filter_by(user_id=user.id, id=subject_id).first()
+    target = Category.query.filter_by(user_id=user.id, id=target_id).first()
+
+    if not subject:
+        raise ValidationError("Subject category not found.", 404)
+    if not target:
+        raise ValidationError("Target category not found.", 404)
+    if subject_id == target_id:
+        raise ValidationError("Category cannot be merged into itself.")

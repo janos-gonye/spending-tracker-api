@@ -8,6 +8,7 @@ from app.categories import cat_blueprint
 from app.categories.decorators import get_category_or_404
 from app.categories.models import Category
 from app.categories.validators import (validate_create_category_data,
+                                       validate_merge_categories,
                                        validate_update_category_data)
 from app.common import key_exists
 from app.common.decorators import jsonify_view
@@ -112,4 +113,25 @@ def delete_category(current_user, cat):
 @token_required
 def merge_categories(current_user):
     data = request.get_json()
-    return 'Johnny', 201
+
+    validate_merge_categories(data, current_user)
+
+    subject_id = data['subject_id']
+    target_id = data['target_id']
+    remove_merged = data['remove_merged']
+
+    subject = Category.query.filter_by(user_id=current_user.id,
+                                       id=subject_id).first()
+
+    for trans in subject.transactions:
+        trans.category_id = target_id
+
+    try:
+        if remove_merged and not subject.get_descendents():
+            db.session.delete(subject)
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return 'Internal Server Error', 500
+
+    return 'Categories successfully merged.', 200
