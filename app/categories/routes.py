@@ -14,7 +14,7 @@ from app.common.decorators import jsonify_view
 from app.db import db
 
 
-@cat_blueprint.route('', methods=['POST'])
+@cat_blueprint.route('categories', methods=['POST'])
 @jsonify_view
 @token_required
 def create_category(current_user):
@@ -41,7 +41,7 @@ def create_category(current_user):
     return new_cat.as_dict(), 201, {'key': 'category'}
 
 
-@cat_blueprint.route('', methods=['GET'])
+@cat_blueprint.route('categories', methods=['GET'])
 @jsonify_view
 @token_required
 def get_categories(current_user):
@@ -50,7 +50,7 @@ def get_categories(current_user):
     return [cat.as_dict() for cat in cats], 200, {'key': 'categories'}
 
 
-@cat_blueprint.route('<int:cat_id>', methods=['GET'])
+@cat_blueprint.route('categories/<int:cat_id>', methods=['GET'])
 @jsonify_view
 @token_required
 @get_category_or_404
@@ -58,7 +58,7 @@ def get_category(current_user, cat):
     return cat.as_dict(), 200, {'key': 'category'}
 
 
-@cat_blueprint.route('<int:cat_id>', methods=['PATCH'])
+@cat_blueprint.route('categories/<int:cat_id>', methods=['PATCH'])
 @jsonify_view
 @token_required
 @get_category_or_404
@@ -92,7 +92,7 @@ def update_category(current_user, cat):
     return cat.as_dict(), 200, {'key': 'category'}
 
 
-@cat_blueprint.route('/<int:cat_id>', methods=['DELETE'])
+@cat_blueprint.route('categories/<int:cat_id>', methods=['DELETE'])
 @jsonify_view
 @token_required
 @get_category_or_404
