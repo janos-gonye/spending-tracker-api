@@ -123,7 +123,7 @@ def merge_categories(current_user):
     subject = Category.query.filter_by(user_id=current_user.id,
                                        id=subject_id).first()
 
-    for trans in subject.transactions:
+    for trans in subject.get_transactions(children=True):
         trans.category_id = target_id
 
     try:
