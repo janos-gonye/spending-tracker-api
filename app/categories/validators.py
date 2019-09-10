@@ -108,19 +108,15 @@ def validate_update_category_data(data, user, cat_to_change):
 def validate_merge_categories(data, user):
     subject_in_json, subject_id = key_exists(data=data, key='subject_id')
     target_in_json, target_id = key_exists(data=data, key='target_id')
-    remove_merged_in_json, remove_merged = key_exists(data=data,
-                                                       key='remove_merged')
 
     for key, name in (
         (subject_in_json, "'subject_id'"),
-        (target_in_json, "'target_id'"),
-        (remove_merged_in_json, "'remove_merged'")):
+        (target_in_json, "'target_id'")):
         if not key:
             raise ValidationError(f"{name} missing.")
 
     subject_id = validate_natural_number(subject_id, name="'subject_id")
     target_id = validate_natural_number(target_id, name="'target_id")
-    remove_merged = validate_bool(remove_merged, "'remove_merged'")
 
     subject = Category.query.filter_by(user_id=user.id, id=subject_id).first()
     target = Category.query.filter_by(user_id=user.id, id=target_id).first()

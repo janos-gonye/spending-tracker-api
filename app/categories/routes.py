@@ -118,7 +118,6 @@ def merge_categories(current_user):
 
     subject_id = data['subject_id']
     target_id = data['target_id']
-    remove_merged = data['remove_merged']
 
     subject = Category.query.filter_by(user_id=current_user.id,
                                        id=subject_id).first()
@@ -127,8 +126,7 @@ def merge_categories(current_user):
         trans.category_id = target_id
 
     try:
-        if remove_merged and not subject.get_descendents():
-            db.session.delete(subject)
+        db.session.delete(subject)
         db.session.commit()
     except SQLAlchemyError:
         db.session.rollback()
