@@ -75,3 +75,11 @@ class Category(db.Model):
         if ascendents_titles == "":
             return self.title
         return ascendents_titles + "/" + self.title
+
+    def get_transactions(self, children=False):
+        transactions = []
+        transactions += self.transactions
+        if children is True:
+            for child in self.children:
+                transactions += child.get_transactions(children=True)
+        return transactions
