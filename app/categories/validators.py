@@ -127,3 +127,8 @@ def validate_merge_categories(data, user):
         raise ValidationError("Target category not found.", 404)
     if subject_id == target_id:
         raise ValidationError("Category cannot be merged into itself.")
+
+    for ascendent in target.get_ascendants():
+        if ascendent.id == subject.id:
+            raise ValidationError(
+                "Category cannot be merged into any of its subcategories.")
