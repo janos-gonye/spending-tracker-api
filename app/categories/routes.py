@@ -126,6 +126,9 @@ def merge_categories(current_user):
         trans.category_id = target_id
 
     try:
+        # Make sure to commit first to save the new category ids,
+        # then the subject category can be deleted.
+        db.session.commit()
         db.session.delete(subject)
         db.session.commit()
     except SQLAlchemyError:
