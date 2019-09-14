@@ -1,19 +1,23 @@
 import re
 
+from flask import current_app as app
+
 from app.common.exceptions import ValidationError
 
 EMAIL_REGEX = r'^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$'
 
 
-def validate_password(password, min_length=6, max_length=50):
+def validate_password(password):
     length = len(password)
+    min_l = app.config['PASSWORD_MIN_LENGTH']
+    max_l = app.config['PASSWORD_MAX_LENGTH']
 
-    if length < min_length or length > max_length or \
+    if length < min_l or length > max_l or \
        not re.search(r"[a-z]", password) or \
        not re.search(r"[A-Z]", password) or \
        not re.search(r"[0-9]", password):
         raise ValidationError(
-            f"Password's length must be at least {min_length} characters. "
+            f"Password's length must be at least {min_l} characters. "
             "Must contain number, upper and lower case letters.")
 
 

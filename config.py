@@ -29,4 +29,8 @@ CANCEL_REGISTRATION_TOKEN_LIFETIME	= int(environ.get('CANCEL_REGISTRATION_TOKEN_
 LOGIN_TOKEN_LIFETIME				= int(environ.get('LOGIN_TOKEN_LIFETIME', 60 * 60)) # seconds
 CHANGE_PASSWORD_TOKEN_LIFETIME      = int(environ.get('CHANGE_PASSWORD_TOKEN_LIFETIME', 60 * 60)) # seconds
 
+# Password related
+PASSWORD_MIN_LEN = int(environ.get('PASSWORD_MIN_LEN'), 6)
+PASSWORD_MAX_LEN = int(environ.get('PASSWORD_MAX_LEN'), 50)
+
 del environ
