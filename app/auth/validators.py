@@ -77,3 +77,14 @@ def validate_change_password(data, user):
         raise ValidationError('Invalid credentials.', 401)
 
     validate_password(new_password)
+
+
+@require_json_validator
+def validate_forgot_password_data(data):
+    email = data.get('email')
+
+    if not email:
+        raise ValidationError('Email missing.')
+
+    if not User.query.filter_by(email=email).first():
+        raise ValidationError('Email not found.', 404)
