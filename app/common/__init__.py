@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from re import compile
 
-from flask import jsonify
+from flask import jsonify, url_for
 
 
 def js(message='', status_code=200, key='message', **kwargs):
@@ -67,3 +67,11 @@ def is_float(string):
         return True
     except ValueError:
         return False
+
+
+def create_link(url_root, endpoint, token=None):
+    # Remove the first '/' character
+    link = url_root + url_for(endpoint)[1:]
+    if token:
+        link = link + f"?token={token}"
+    return link
