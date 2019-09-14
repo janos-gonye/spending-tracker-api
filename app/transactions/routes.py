@@ -12,8 +12,8 @@ from app.db import db
 from app.transactions import trans_blueprint
 from app.transactions.decorators import get_trans_or_404
 from app.transactions.models import Transaction
-from app.transactions.validators import (validate_create_trans_data,
-                                         validate_update_trans_data)
+from app.transactions.validators import (validate_create_trans,
+                                         validate_update_trans)
 
 
 @trans_blueprint.route('', methods=['POST'])
@@ -23,7 +23,7 @@ from app.transactions.validators import (validate_create_trans_data,
 def create_transaction(current_user, cat):
     data = request.get_json()
 
-    validate_create_trans_data(data=data)
+    validate_create_trans(data=data)
 
     amount = data.get('amount')
     processed_at = data.get('processed_at')
@@ -83,7 +83,7 @@ def get_transaction(current_user, cat, trans):
 @get_trans_or_404
 def update_transaction(current_user, cat, trans):
     data = request.get_json()
-    validate_update_trans_data(data=data)
+    validate_update_trans(data=data)
 
     amount_in_json, amount = key_exists(data=data, key='amount')
     processed_at_in_json, processed_at = key_exists(

@@ -12,7 +12,7 @@ MAX_DESCRIPTION_LEN = Category.MAX_DESCRIPTION_LEN
 
 
 @require_json_validator
-def validate_create_category_data(data, user):
+def validate_create_category(data, user):
 
     # use this as data.get(...) would give None
     # whether key is not in JSON or key's value is null
@@ -53,7 +53,7 @@ def validate_create_category_data(data, user):
 
 
 @require_json_validator
-def validate_update_category_data(data, user, cat_to_change):
+def validate_update_category(data, user, cat_to_change):
 
     # use this as data.get(...) would give None
     # whether key is not in JSON or key's value is null

@@ -10,7 +10,7 @@ MAX_COMMENT_LEN = Transaction.MAX_COMMENT_LEN
 
 
 @require_json_validator
-def validate_create_trans_data(data):
+def validate_create_trans(data):
 
     # use this as data.get(...) would give None
     # wether key is not in JSON or key's value is NULL
@@ -45,7 +45,7 @@ def validate_create_trans_data(data):
 
 
 @require_json_validator
-def validate_update_trans_data(data):
+def validate_update_trans(data):
 
     # use this as data.get(...) would give None
     # wether key is not in JSON or key's value is NULL

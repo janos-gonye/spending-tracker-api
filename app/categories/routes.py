@@ -7,9 +7,9 @@ from app.auth.decorators import token_required
 from app.categories import cat_blueprint
 from app.categories.decorators import get_category_or_404
 from app.categories.models import Category
-from app.categories.validators import (validate_create_category_data,
+from app.categories.validators import (validate_create_category,
                                        validate_merge_categories,
-                                       validate_update_category_data)
+                                       validate_update_category)
 from app.common import key_exists
 from app.common.decorators import jsonify_view
 from app.db import db
@@ -21,7 +21,7 @@ from app.db import db
 def create_category(current_user):
     data = request.get_json()
 
-    validate_create_category_data(data=data, user=current_user)
+    validate_create_category(data=data, user=current_user)
 
     title = data.get('title')
     description = data.get('description')
@@ -65,8 +65,7 @@ def get_category(current_user, cat):
 @get_category_or_404
 def update_category(current_user, cat):
     data = request.get_json()
-    validate_update_category_data(data=data, user=current_user,
-                                  cat_to_change=cat)
+    validate_update_category(data=data, user=current_user, cat_to_change=cat)
 
     title = data.get('title')
     description_in_json, description = key_exists(data=data, key='description')
