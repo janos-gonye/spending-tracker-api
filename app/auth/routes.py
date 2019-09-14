@@ -11,14 +11,15 @@ from app.auth import auth
 from app.auth.decorators import token_required
 from app.auth.mail import (send_cancel_reg_confirm_email,
                            send_cancel_reg_confirmed_email,
-                           send_reg_confirm_mail, send_reg_confirmed_mail,
-                           send_reset_password_mail)
+                           send_new_password_mail, send_reg_confirm_mail,
+                           send_reg_confirmed_mail, send_reset_password_mail)
 from app.auth.models import User
 from app.auth.validators import (validate_change_password,
                                  validate_confirm_registration,
                                  validate_forgot_password, validate_login,
                                  validate_registration)
 from app.common.decorators import jsonify_view
+from app.common.helpers import generate_password
 from app.common.token import decode_token, encode_token
 from app.db import db
 
@@ -182,4 +183,36 @@ def forgot_password():
 
 @auth.route('/reset-password', methods=['GET'])
 def reset_password():
-    pass
+    token = request.args.get('token')
+
+    if not token:
+        return 'Token missing.', 400
+
+    payload = decode_token(token)
+
+    if not payload:
+        return 'Token invalid.', 400
+
+    if payload.get('expiresAt') and float(payload['expiresAt']) < time():
+        return 'Token expired.', 400
+
+    email = payload.get('email')
+    if not email:
+        return 'Token invalid.', 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return 'Token invalid.', 400
+
+    new_password = generate_password()
+
+    try:
+        user.set_password(new_password)
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return 'Internal Server Error.', 500
+
+    send_new_password_mail(recipient=email, new_password=new_password)
+
+    return 'Email with new password sent.', 202
