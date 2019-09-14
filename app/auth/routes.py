@@ -175,7 +175,7 @@ def forgot_password():
     token = encode_token(
         payload=payload, lifetime=app.config['CHANGE_PASSWORD_TOKEN_LIFETIME'])
 
-    send_reset_password_mail(recipient=email, token=token)
+    send_reset_password_mail(recipient=email, token=token.decode('utf-8'))
 
     return 'Email to reset your password sent.', 202
 
