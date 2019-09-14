@@ -19,8 +19,8 @@ def validate_registration_data(data):
     if not email:
         raise ValidationError('Email missing.')
 
-    validate_email(data)
-    validate_password(data)
+    validate_email(email)
+    validate_password(password)
 
     if email and already_registered(email=email):
         raise ValidationError('Email address already registered.')
