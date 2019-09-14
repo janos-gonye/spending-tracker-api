@@ -70,7 +70,6 @@ def send_reg_confirmed_mail(recipient):
 
 
 def send_cancel_reg_confirm_email(recipient, token):
-    # remove the first '/' character
     link = create_link(
         request.url_root, 'auth.confirm_cancel_registration', token)
 
