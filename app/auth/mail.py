@@ -1,16 +1,16 @@
 from flask import current_app as app
-from flask import request, url_for
+from flask import request
 from flask_mail import Message
 
+from app.common import create_link
 from app.mail import mail
 
 
 def send_reg_confirm_mail(recipient, token):
     """
     token as string decoded to utf-8
-    """						  # remove the first '/' character
-    link = request.url_root + \
-        url_for('auth.confirm_registration')[1:] + '?token=%s' % token
+    """
+    link = create_link(request.url_root, 'auth.confirm_registration', token)
 
     msg = Message(
         subject='Spending Tracker - Activate your registration',
@@ -71,8 +71,8 @@ def send_reg_confirmed_mail(recipient):
 
 def send_cancel_reg_confirm_email(recipient, token):
     # remove the first '/' character
-    link = request.url_root + \
-        url_for('auth.confirm_cancel_registration')[1:] + '?token=%s' % token
+    link = create_link(
+        request.url_root, 'auth.confirm_cancel_registration', token)
 
     msg = Message(
         subject=('Spending Tracker - Confirm cancellation of your Spending'
