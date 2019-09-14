@@ -20,7 +20,7 @@ def encode_token(payload, lifetime=3600, from_=None):
         from_ = time()
 
     if payload.get('expiresAt'):
-        raise Error(
+        raise Exception(
             "Programming Error: 'Payload' dict already has key 'expiresAt'")
 
     if lifetime:
