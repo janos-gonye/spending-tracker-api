@@ -11,10 +11,12 @@ from app.auth import auth
 from app.auth.decorators import token_required
 from app.auth.mail import (send_cancel_reg_confirm_email,
                            send_cancel_reg_confirmed_email,
-                           send_reg_confirm_mail, send_reg_confirmed_mail)
+                           send_reg_confirm_mail, send_reg_confirmed_mail,
+                           send_reset_password_mail)
 from app.auth.models import User
 from app.auth.validators import (validate_change_password,
-                                 validate_confirm_registration, validate_login,
+                                 validate_confirm_registration,
+                                 validate_forgot_password, validate_login,
                                  validate_registration)
 from app.common.decorators import jsonify_view
 from app.common.token import decode_token, encode_token
@@ -159,3 +161,25 @@ def change_password(current_user):
     except SQLAlchemyError:
         db.session.rollback()
         return 'Internal Server Error.', 500
+
+
+@auth.route('/forgot-password', methods=['POST'])
+@jsonify_view
+def forgot_password():
+    data = request.get_json()
+
+    validate_forgot_password(data)
+
+    email = data['email']
+    payload = {'email': email}
+    token = encode_token(
+        payload=payload, lifetime=app.config['CHANGE_PASSWORD_TOKEN_LIFETIME'])
+
+    send_reset_password_mail(recipient=email, token=token)
+
+    return 'Email to reset your password sent.', 202
+
+
+@auth.route('/reset-password', methods=['GET'])
+def reset_password():
+    pass
