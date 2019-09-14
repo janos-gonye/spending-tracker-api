@@ -14,8 +14,8 @@ from app.auth.mail import (send_cancel_reg_confirm_email,
                            send_reg_confirm_mail, send_reg_confirmed_mail)
 from app.auth.models import User
 from app.auth.validators import (validate_change_password,
-                                 validate_confirm_registration_data,
-                                 validate_login, validate_registration_data)
+                                 validate_confirm_registration, validate_login,
+                                 validate_registration)
 from app.common.decorators import jsonify_view
 from app.common.token import decode_token, encode_token
 from app.db import db
@@ -26,7 +26,7 @@ from app.db import db
 def registration():
     data = request.get_json()
 
-    validate_registration_data(data=data)
+    validate_registration(data=data)
 
     payload = {'email': data['email'], 'password': data['password']}
     token = encode_token(
@@ -45,7 +45,7 @@ def confirm_registration():
         return 'Token missing.', 400
 
     data = decode_token(token)
-    validate_confirm_registration_data(data=data)
+    validate_confirm_registration(data=data)
 
     new_user = User(public_id=uuid4(),
                     email=data['email'], password=data['password'])

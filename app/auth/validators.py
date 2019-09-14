@@ -7,7 +7,7 @@ from app.common.validators import validate_email, validate_password
 
 
 @require_json_validator
-def validate_registration_data(data):
+def validate_registration(data):
     """doesn't check if user already registered"""
 
     email = data.get('email')
@@ -26,11 +26,11 @@ def validate_registration_data(data):
         raise ValidationError('Email address already registered.')
 
 
-def validate_confirm_registration_data(data):
+def validate_confirm_registration(data):
     """doesn't check if user already registered"""
 
     try:
-        validate_registration_data(data=data)
+        validate_registration(data=data)
     except ValidationError:
         raise ValidationError('Token invalid.', 401)
 
@@ -80,7 +80,7 @@ def validate_change_password(data, user):
 
 
 @require_json_validator
-def validate_forgot_password_data(data):
+def validate_forgot_password(data):
     email = data.get('email')
 
     if not email:
