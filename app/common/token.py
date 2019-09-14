@@ -43,7 +43,7 @@ def decode_token(token):
 
     try:
         payload = decode(token, app.secret_key)
-    except PyJWTError as err:
+    except PyJWTError:
         return None
 
     return payload
