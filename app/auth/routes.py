@@ -34,7 +34,7 @@ def registration():
 
     send_reg_confirm_mail(recipient=data['email'], token=token.decode('utf-8'))
 
-    return 'Confirmation email has been sent.', 201
+    return 'Confirmation email has been sent.', 202
 
 
 @auth.route('/registration/confirm', methods=['GET'])
