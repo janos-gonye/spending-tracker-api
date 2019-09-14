@@ -9,8 +9,8 @@ EMAIL_REGEX = r'^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((
 
 def validate_password(password):
     length = len(password)
-    min_l = app.config['PASSWORD_MIN_LENGTH']
-    max_l = app.config['PASSWORD_MAX_LENGTH']
+    min_l = app.config['PASSWORD_MIN_LEN']
+    max_l = app.config['PASSWORD_MAX_LEN']
 
     if length < min_l or length > max_l or \
        not re.search(r"[a-z]", password) or \

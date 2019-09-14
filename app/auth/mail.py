@@ -134,13 +134,14 @@ def send_cancel_reg_confirmed_email(recipient):
 def send_reset_password_mail(recipient, token):
     link = create_link(request.url_root, 'auth.reset_password', token)
     msg = Message(
-        subject='Spending Tracker - Reset password.',
+        subject='Spending Tracker - Forgot password',
         recipients=[recipient],
         html=(
             "<header>"
-            "<h3>Spending Tracker - Reset Password</h3>"
+            "<h3>Spending Tracker - Forgot password</h3>"
             "<p>You've received this email "
-            "because you've requested a new password in Spending Tracker.</p>"
+            "because you've requested a link to reset your password "
+            "for your Spending Tracker account.</p>"
             "</header>"
             "<main>"
             "<p>Copy this link</p>"
@@ -155,5 +156,30 @@ def send_reset_password_mail(recipient, token):
             "We're sorry to bother you :)</small></p>"
             "</footer>"
         ) % link
+    )
+    mail.send(msg)
+
+
+def send_new_password_mail(recipient, new_password):
+    msg = Message(
+        subject='Spending Tracker - Reset password',
+        recipients=[recipient],
+        html=(
+            "<header>"
+            "<h3>Spending Tracker - Reset password</h3>"
+            "<p>You've received this email "
+            "because you've requested a new password "
+            "for your Spending Tracker account.</p>"
+            "</header>"
+            "<main>"
+            "<p>Your new password:</p>"
+            "<hr>"
+            "<em>%s</em>"
+            "<hr>"
+            "<p><strong>We recommend that you change your password "
+            "next time you log in.</strong></p>"
+            "<footer>"
+            "</footer>"
+        ) % new_password
     )
     mail.send(msg)
