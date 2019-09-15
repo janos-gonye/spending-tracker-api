@@ -20,11 +20,8 @@ from app.transactions.validators import (validate_create_trans,
 @jsonify_view
 @token_required
 @get_category_or_404
-def create_transaction(current_user, cat):
-    data = request.get_json()
-
-    validate_create_trans(data=data)
-
+@validate_create_trans
+def create_transaction(data, current_user, cat):
     amount = data.get('amount')
     processed_at = data.get('processed_at')
     comment = data.get('comment')
@@ -81,10 +78,8 @@ def get_transaction(current_user, cat, trans):
 @token_required
 @get_category_or_404
 @get_trans_or_404
-def update_transaction(current_user, cat, trans):
-    data = request.get_json()
-    validate_update_trans(data=data)
-
+@validate_update_trans
+def update_transaction(data, current_user, cat, trans):
     amount_in_json, amount = key_exists(data=data, key='amount')
     processed_at_in_json, processed_at = key_exists(
         data=data, key='processed_at')
