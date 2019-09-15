@@ -9,7 +9,7 @@ MIN_COMMENT_LEN = Transaction.MIN_COMMENT_LEN
 MAX_COMMENT_LEN = Transaction.MAX_COMMENT_LEN
 
 
-def _validate_create_trans(data, *args, **kwargs):
+def _create_transaction(data, *args, **kwargs):
 
     # use this as data.get(...) would give None
     # wether key is not in JSON or key's value is NULL
@@ -43,7 +43,7 @@ def _validate_create_trans(data, *args, **kwargs):
                 MIN_COMMENT_LEN, MAX_COMMENT_LEN))
 
 
-def _validate_update_trans(data, *args, **kwargs):
+def _update_transaction(data, *args, **kwargs):
 
     # use this as data.get(...) would give None
     # wether key is not in JSON or key's value is NULL
@@ -73,5 +73,5 @@ def _validate_update_trans(data, *args, **kwargs):
                 MIN_COMMENT_LEN, MAX_COMMENT_LEN))
 
 
-validate_create_trans = json_validator_template(_validate_create_trans)
-validate_update_trans = json_validator_template(_validate_update_trans)
+create_transaction = json_validator_template(_create_transaction)
+update_transaction = json_validator_template(_update_transaction)

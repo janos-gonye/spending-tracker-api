@@ -9,18 +9,16 @@ from app.common import datetime2timestamp, key_exists, timestamp2datetime
 from app.common.decorators import jsonify_view
 from app.common.params import get_param_from, get_param_to
 from app.db import db
-from app.transactions import trans_blueprint
+from app.transactions import trans_blueprint, validators
 from app.transactions.decorators import get_trans_or_404
 from app.transactions.models import Transaction
-from app.transactions.validators import (validate_create_trans,
-                                         validate_update_trans)
 
 
 @trans_blueprint.route('', methods=['POST'])
 @jsonify_view
 @token_required
 @get_category_or_404
-@validate_create_trans
+@validators.create_transaction
 def create_transaction(data, current_user, cat):
     amount = data.get('amount')
     processed_at = data.get('processed_at')
@@ -78,7 +76,7 @@ def get_transaction(current_user, cat, trans):
 @token_required
 @get_category_or_404
 @get_trans_or_404
-@validate_update_trans
+@validators.update_transaction
 def update_transaction(data, current_user, cat, trans):
     amount_in_json, amount = key_exists(data=data, key='amount')
     processed_at_in_json, processed_at = key_exists(
