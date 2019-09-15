@@ -18,11 +18,8 @@ from app.db import db
 @cat_blueprint.route('categories', methods=['POST'])
 @jsonify_view
 @token_required
-def create_category(current_user):
-    data = request.get_json()
-
-    validate_create_category(data=data, user=current_user)
-
+@validate_create_category
+def create_category(data, current_user):
     title = data.get('title')
     description = data.get('description')
     parent_id = data.get('parent_id')
@@ -63,10 +60,8 @@ def get_category(current_user, cat):
 @jsonify_view
 @token_required
 @get_category_or_404
-def update_category(current_user, cat):
-    data = request.get_json()
-    validate_update_category(data=data, user=current_user, cat_to_change=cat)
-
+@validate_update_category
+def update_category(data, current_user, cat):
     title = data.get('title')
     description_in_json, description = key_exists(data=data, key='description')
     parent_id_in_json, parent_id = key_exists(data=data, key='parent_id')
@@ -110,11 +105,8 @@ def delete_category(current_user, cat):
 @cat_blueprint.route('/merge-categories', methods=['POST'])
 @jsonify_view
 @token_required
-def merge_categories(current_user):
-    data = request.get_json()
-
-    validate_merge_categories(data, current_user)
-
+@validate_merge_categories
+def merge_categories(data, current_user):
     subject_id = data['subject_id']
     target_id = data['target_id']
 
