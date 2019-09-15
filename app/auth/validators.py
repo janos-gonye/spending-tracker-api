@@ -2,7 +2,8 @@ from time import time
 
 from app.auth.models import User
 from app.common.exceptions import ValidationError
-from app.common.templates import json_validator_template
+from app.common.templates import (json_validator_template,
+                                  token_as_arg_validator_template)
 from app.common.validators import validate_email, validate_password
 
 
@@ -23,21 +24,11 @@ def _validate_registration(data):
         raise ValidationError('Email address already registered.')
 
 
-def validate_confirm_registration(data):
-    """doesn't check if user already registered"""
-
+def _validate_confirm_registration(data):
     try:
-        _validate_registration(data=data)
+        _validate_registration(data)
     except ValidationError:
-        raise ValidationError('Token invalid.', 401)
-
-    if already_registered(email=data['email']):
-        # this time with a different message
-        raise ValidationError('Registration already confirmed.')
-
-    expiresAt = data.get('expiresAt')
-    if expiresAt and float(expiresAt) < time():
-        raise ValidationError('Token expired.')
+        raise ValidationError('Token invalid.', 40)
 
 
 def already_registered(email):
@@ -88,3 +79,6 @@ validate_registration = json_validator_template(_validate_registration)
 validate_login = json_validator_template(_validate_login)
 validate_change_password = json_validator_template(_validate_change_password)
 validate_forgot_password = json_validator_template(_validate_forgot_password)
+validate_confirm_registration = token_as_arg_validator_template(
+    _validate_confirm_registration)
+validate_token_as_arg = token_as_arg_validator_template(None)

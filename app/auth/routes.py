@@ -17,7 +17,7 @@ from app.auth.models import User
 from app.auth.validators import (validate_change_password,
                                  validate_confirm_registration,
                                  validate_forgot_password, validate_login,
-                                 validate_registration)
+                                 validate_registration, validate_token_as_arg)
 from app.common.decorators import jsonify_view
 from app.common.helpers import generate_password
 from app.common.token import decode_token, encode_token
@@ -38,15 +38,8 @@ def registration(data):
 
 
 @auth.route('/registration/confirm', methods=['GET'])
-def confirm_registration():
-    token = request.args.get('token')
-
-    if not token:
-        return 'Token missing.', 400
-
-    data = decode_token(token)
-    validate_confirm_registration(data=data)
-
+@validate_confirm_registration
+def confirm_registration(data):
     new_user = User(public_id=uuid4(),
                     email=data['email'], password=data['password'])
 
@@ -78,21 +71,9 @@ def cancel_registration(current_user):
 
 
 @auth.route('/registration/cancel/confirm', methods=['GET'])
-def confirm_cancel_registration():
-    token = request.args.get('token')
-
-    if not token:
-        return 'Token missing.', 400
-
-    payload = decode_token(token)
-
-    if not payload:
-        return 'Token invalid.', 400
-
-    if payload.get('expiresAt') and float(payload['expiresAt']) < time():
-        return 'Token expired.', 400
-
-    user = User.query.filter_by(public_id=payload.get('public_id')).first()
+@validate_token_as_arg
+def confirm_cancel_registration(data):
+    user = User.query.filter_by(public_id=data.get('public_id')).first()
 
     if not user:
         return 'Token invalid.', 400
@@ -170,21 +151,9 @@ def forgot_password(data):
 
 
 @auth.route('/reset-password', methods=['GET'])
-def reset_password():
-    token = request.args.get('token')
-
-    if not token:
-        return 'Token missing.', 400
-
-    payload = decode_token(token)
-
-    if not payload:
-        return 'Token invalid.', 400
-
-    if payload.get('expiresAt') and float(payload['expiresAt']) < time():
-        return 'Token expired.', 400
-
-    email = payload.get('email')
+@validate_token_as_arg
+def reset_password(data):
+    email = data.get('email')
     if not email:
         return 'Token invalid.', 400
 
