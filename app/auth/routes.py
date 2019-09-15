@@ -7,17 +7,13 @@ from flask import current_app as app
 from flask import request
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.auth import auth
+from app.auth import auth, validators
 from app.auth.decorators import token_required
 from app.auth.mail import (send_cancel_reg_confirm_email,
                            send_cancel_reg_confirmed_email,
                            send_new_password_mail, send_reg_confirm_mail,
                            send_reg_confirmed_mail, send_reset_password_mail)
 from app.auth.models import User
-from app.auth.validators import (validate_change_password,
-                                 validate_confirm_registration,
-                                 validate_forgot_password, validate_login,
-                                 validate_registration, validate_token_as_arg)
 from app.common.decorators import jsonify_view
 from app.common.helpers import generate_password
 from app.common.token import decode_token, encode_token
@@ -26,7 +22,7 @@ from app.db import db
 
 @auth.route('/registration', methods=['POST'])
 @jsonify_view
-@validate_registration
+@validators.registration
 def registration(data):
     payload = {'email': data['email'], 'password': data['password']}
     token = encode_token(
@@ -38,7 +34,7 @@ def registration(data):
 
 
 @auth.route('/registration/confirm', methods=['GET'])
-@validate_confirm_registration
+@validators.confirm_registration
 def confirm_registration(data):
     new_user = User(public_id=uuid4(),
                     email=data['email'], password=data['password'])
@@ -71,7 +67,7 @@ def cancel_registration(current_user):
 
 
 @auth.route('/registration/cancel/confirm', methods=['GET'])
-@validate_token_as_arg
+@validators.token_as_arg
 def confirm_cancel_registration(data):
     user = User.query.filter_by(public_id=data.get('public_id')).first()
 
@@ -94,7 +90,7 @@ def confirm_cancel_registration(data):
 
 @auth.route('/login', methods=['POST'])
 @jsonify_view
-@validate_login
+@validators.login
 def login(data):
     user = User.query.filter_by(email=data['email']).first()
 
@@ -123,7 +119,7 @@ def logout(current_user):
 @auth.route('/change-password', methods=['POST'])
 @jsonify_view
 @token_required
-@validate_change_password
+@validators.change_password
 def change_password(data, current_user):
     new_password = data['new_password']
 
@@ -138,7 +134,7 @@ def change_password(data, current_user):
 
 @auth.route('/forgot-password', methods=['POST'])
 @jsonify_view
-@validate_forgot_password
+@validators.forgot_password
 def forgot_password(data):
     email = data['email']
     payload = {'email': email}
@@ -151,7 +147,7 @@ def forgot_password(data):
 
 
 @auth.route('/reset-password', methods=['GET'])
-@validate_token_as_arg
+@validators.forgot_password
 def reset_password(data):
     email = data.get('email')
     if not email:

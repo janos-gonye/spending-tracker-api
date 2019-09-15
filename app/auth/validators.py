@@ -7,7 +7,7 @@ from app.common.templates import (json_validator_template,
 from app.common.validators import validate_email, validate_password
 
 
-def _validate_registration(data):
+def _registration(data):
     email = data.get('email')
     password = data.get('password')
 
@@ -24,9 +24,9 @@ def _validate_registration(data):
         raise ValidationError('Email address already registered.')
 
 
-def _validate_confirm_registration(data):
+def _confirm_registration(data):
     try:
-        _validate_registration(data)
+        _registration(data)
     except ValidationError:
         raise ValidationError('Token invalid.', 40)
 
@@ -35,7 +35,7 @@ def already_registered(email):
     return bool(User.query.filter_by(email=email).first())
 
 
-def _validate_login(data):
+def _login(data):
 
     email = data.get('email')
     password = data.get('password')
@@ -49,7 +49,7 @@ def _validate_login(data):
         raise ValidationError('Invalid credentials.', 401)
 
 
-def _validate_change_password(data, current_user):
+def _change_password(data, current_user):
     old_password = data.get('old_password')
     new_password = data.get('new_password')
 
@@ -65,7 +65,7 @@ def _validate_change_password(data, current_user):
     validate_password(new_password)
 
 
-def _validate_forgot_password(data):
+def _forgot_password(data):
     email = data.get('email')
 
     if not email:
@@ -75,10 +75,9 @@ def _validate_forgot_password(data):
         raise ValidationError('Email not found.', 404)
 
 
-validate_registration = json_validator_template(_validate_registration)
-validate_login = json_validator_template(_validate_login)
-validate_change_password = json_validator_template(_validate_change_password)
-validate_forgot_password = json_validator_template(_validate_forgot_password)
-validate_confirm_registration = token_as_arg_validator_template(
-    _validate_confirm_registration)
-validate_token_as_arg = token_as_arg_validator_template(None)
+registration = json_validator_template(_registration)
+login = json_validator_template(_login)
+change_password = json_validator_template(_change_password)
+forgot_password = json_validator_template(_forgot_password)
+confirm_registration = token_as_arg_validator_template(_confirm_registration)
+token_as_arg = token_as_arg_validator_template(None)
