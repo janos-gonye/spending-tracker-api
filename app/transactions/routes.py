@@ -54,7 +54,7 @@ def get_transactions(current_user, cat):
         for cat in current_user.categories:
             trans_s += cat.transactions
     else:
-        trans_s = Transaction.query.filter_by(category_id=cat.id).all()
+        trans_s = cat.get_transactions(children=True)
 
     trans_s = filter(
         lambda t: from_ <= datetime2timestamp(t.processed_at) <= to, trans_s)
