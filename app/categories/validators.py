@@ -11,7 +11,7 @@ MIN_DESCRIPTION_LEN = Category.MIN_DESCRIPTION_LEN
 MAX_DESCRIPTION_LEN = Category.MAX_DESCRIPTION_LEN
 
 
-def _validate_create_category(data, current_user):
+def _create_category(data, current_user):
 
     # use this as data.get(...) would give None
     # whether key is not in JSON or key's value is null
@@ -51,7 +51,7 @@ def _validate_create_category(data, current_user):
         raise ValidationError('Title and parent_id must be unique together.')
 
 
-def _validate_update_category(data, user, cat):
+def _update_category(data, user, cat):
     cat_to_change = cat
 
     # use this as data.get(...) would give None
@@ -103,7 +103,7 @@ def _validate_update_category(data, user, cat):
                 'Title and parent_id must be unique together.')
 
 
-def _validate_merge_categories(data, current_user):
+def _merge_categories(data, current_user):
     subject_in_json, subject_id = key_exists(data=data, key='subject_id')
     target_in_json, target_id = key_exists(data=data, key='target_id')
 
@@ -134,7 +134,6 @@ def _validate_merge_categories(data, current_user):
                 "Category cannot be merged into any of its subcategories.")
 
 
-validate_create_category = json_validator_template(_validate_create_category)
-validate_update_category = json_validator_template(_validate_update_category)
-validate_merge_categories = json_validator_template(
-    _validate_merge_categories)
+create_category = json_validator_template(_create_category)
+update_category = json_validator_template(_update_category)
+merge_categories = json_validator_template(_merge_categories)

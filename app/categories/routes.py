@@ -4,12 +4,9 @@ from flask import request
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.auth.decorators import token_required
-from app.categories import cat_blueprint
+from app.categories import cat_blueprint, validators
 from app.categories.decorators import get_category_or_404
 from app.categories.models import Category
-from app.categories.validators import (validate_create_category,
-                                       validate_merge_categories,
-                                       validate_update_category)
 from app.common import key_exists
 from app.common.decorators import jsonify_view
 from app.db import db
@@ -18,7 +15,7 @@ from app.db import db
 @cat_blueprint.route('categories', methods=['POST'])
 @jsonify_view
 @token_required
-@validate_create_category
+@validators.create_category
 def create_category(data, current_user):
     title = data.get('title')
     description = data.get('description')
@@ -60,7 +57,7 @@ def get_category(current_user, cat):
 @jsonify_view
 @token_required
 @get_category_or_404
-@validate_update_category
+@validators.update_category
 def update_category(data, current_user, cat):
     title = data.get('title')
     description_in_json, description = key_exists(data=data, key='description')
@@ -105,7 +102,7 @@ def delete_category(current_user, cat):
 @cat_blueprint.route('/merge-categories', methods=['POST'])
 @jsonify_view
 @token_required
-@validate_merge_categories
+@validators.merge_categories
 def merge_categories(data, current_user):
     subject_id = data['subject_id']
     target_id = data['target_id']
