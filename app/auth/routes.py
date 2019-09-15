@@ -7,12 +7,8 @@ from flask import current_app as app
 from flask import request
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.auth import auth, validators
+from app.auth import auth, mail, validators
 from app.auth.decorators import token_required
-from app.auth.mail import (send_cancel_reg_confirm_email,
-                           send_cancel_reg_confirmed_email,
-                           send_new_password_mail, send_reg_confirm_mail,
-                           send_reg_confirmed_mail, send_reset_password_mail)
 from app.auth.models import User
 from app.common.decorators import jsonify_view
 from app.common.helpers import generate_password
@@ -28,7 +24,7 @@ def registration(data):
     token = encode_token(
         payload=payload, lifetime=app.config['REGISTRATION_TOKEN_LIFETIME'])
 
-    send_reg_confirm_mail(recipient=data['email'], token=token.decode('utf-8'))
+    mail.send_reg_confirm_mail(recipient=data['email'], token=token.decode('utf-8'))
 
     return 'Confirmation email has been sent.', 202
 
@@ -46,7 +42,7 @@ def confirm_registration(data):
         db.session.rollback()
         return 'Internal Server Error.', 500
 
-    send_reg_confirmed_mail(recipient=data['email'])
+    mail.send_reg_confirmed_mail(recipient=data['email'])
 
     return 'Registration confirmed.', 200
 
@@ -60,7 +56,7 @@ def cancel_registration(current_user):
         payload=payload,
         lifetime=app.config['CANCEL_REGISTRATION_TOKEN_LIFETIME'])
 
-    send_cancel_reg_confirm_email(
+    mail.send_cancel_reg_confirm_email(
         recipient=current_user.email, token=token.decode('utf-8'))
 
     return 'Confirmation email has been sent.', 202
@@ -83,7 +79,7 @@ def confirm_cancel_registration(data):
         db.session.rollback()
         return 'Internal Server Error.', 500
 
-    send_cancel_reg_confirmed_email(recipient=email)
+    mail.send_cancel_reg_confirmed_email(recipient=email)
 
     return 'Registration cancelled.', 200
 
@@ -141,7 +137,7 @@ def forgot_password(data):
     token = encode_token(
         payload=payload, lifetime=app.config['CHANGE_PASSWORD_TOKEN_LIFETIME'])
 
-    send_reset_password_mail(recipient=email, token=token.decode('utf-8'))
+    mail.send_reset_password_mail(recipient=email, token=token.decode('utf-8'))
 
     return 'Email to reset your password sent.', 202
 
@@ -166,6 +162,6 @@ def reset_password(data):
         db.session.rollback()
         return 'Internal Server Error.', 500
 
-    send_new_password_mail(recipient=email, new_password=new_password)
+    mail.send_new_password_mail(recipient=email, new_password=new_password)
 
     return 'Email with new password sent.', 202
