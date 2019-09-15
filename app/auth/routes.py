@@ -143,7 +143,7 @@ def forgot_password(data):
 
 
 @auth.route('/reset-password', methods=['GET'])
-@validators.forgot_password
+@validators.token_as_arg
 def reset_password(data):
     email = data.get('email')
     if not email:
