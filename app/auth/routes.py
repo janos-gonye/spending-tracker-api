@@ -26,11 +26,8 @@ from app.db import db
 
 @auth.route('/registration', methods=['POST'])
 @jsonify_view
-def registration():
-    data = request.get_json()
-
-    validate_registration(data=data)
-
+@validate_registration
+def registration(data):
     payload = {'email': data['email'], 'password': data['password']}
     token = encode_token(
         payload=payload, lifetime=app.config['REGISTRATION_TOKEN_LIFETIME'])
@@ -116,11 +113,8 @@ def confirm_cancel_registration():
 
 @auth.route('/login', methods=['POST'])
 @jsonify_view
-def login():
-    data = request.get_json()
-
-    validate_login(data)
-
+@validate_login
+def login(data):
     user = User.query.filter_by(email=data['email']).first()
 
     payload = {'public_id': user.public_id}
@@ -148,11 +142,8 @@ def logout(current_user):
 @auth.route('/change-password', methods=['POST'])
 @jsonify_view
 @token_required
-def change_password(current_user):
-    data = request.get_json()
-
-    validate_change_password(data, current_user)
-
+@validate_change_password
+def change_password(data, current_user):
     new_password = data['new_password']
 
     try:
@@ -166,11 +157,8 @@ def change_password(current_user):
 
 @auth.route('/forgot-password', methods=['POST'])
 @jsonify_view
-def forgot_password():
-    data = request.get_json()
-
-    validate_forgot_password(data)
-
+@validate_forgot_password
+def forgot_password(data):
     email = data['email']
     payload = {'email': email}
     token = encode_token(

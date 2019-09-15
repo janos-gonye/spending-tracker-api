@@ -1,15 +1,12 @@
 from time import time
 
 from app.auth.models import User
-from app.common.decorators import require_json_validator
 from app.common.exceptions import ValidationError
+from app.common.templates import json_validator_template
 from app.common.validators import validate_email, validate_password
 
 
-@require_json_validator
-def validate_registration(data):
-    """doesn't check if user already registered"""
-
+def _validate_registration(data):
     email = data.get('email')
     password = data.get('password')
 
@@ -30,7 +27,7 @@ def validate_confirm_registration(data):
     """doesn't check if user already registered"""
 
     try:
-        validate_registration(data=data)
+        _validate_registration(data=data)
     except ValidationError:
         raise ValidationError('Token invalid.', 401)
 
@@ -47,8 +44,7 @@ def already_registered(email):
     return bool(User.query.filter_by(email=email).first())
 
 
-@require_json_validator
-def validate_login(data):
+def _validate_login(data):
 
     email = data.get('email')
     password = data.get('password')
@@ -62,8 +58,7 @@ def validate_login(data):
         raise ValidationError('Invalid credentials.', 401)
 
 
-@require_json_validator
-def validate_change_password(data, user):
+def _validate_change_password(data, current_user):
     old_password = data.get('old_password')
     new_password = data.get('new_password')
 
@@ -73,14 +68,13 @@ def validate_change_password(data, user):
     if not new_password:
         raise ValidationError('New password missing.')
 
-    if not user.check_password(old_password):
+    if not current_user.check_password(old_password):
         raise ValidationError('Invalid credentials.', 401)
 
     validate_password(new_password)
 
 
-@require_json_validator
-def validate_forgot_password(data):
+def _validate_forgot_password(data):
     email = data.get('email')
 
     if not email:
@@ -88,3 +82,9 @@ def validate_forgot_password(data):
 
     if not User.query.filter_by(email=email).first():
         raise ValidationError('Email not found.', 404)
+
+
+validate_registration = json_validator_template(_validate_registration)
+validate_login = json_validator_template(_validate_login)
+validate_change_password = json_validator_template(_validate_change_password)
+validate_forgot_password = json_validator_template(_validate_forgot_password)

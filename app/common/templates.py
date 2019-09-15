@@ -9,12 +9,12 @@ def json_validator_template(validator=None):
     def decorator(f):
 
         @wraps(f)
-        def decorated(**kwargs):
+        def decorated(*args, **kwargs):
             data = request.get_json()
             if not data:
                 raise ValidationError('JSON payload required.')
             if validator:
-                validator(data, **kwargs)
-            return f(data, **kwargs)
+                validator(data, *args, **kwargs)
+            return f(data, *args, **kwargs)
         return decorated
     return decorator
