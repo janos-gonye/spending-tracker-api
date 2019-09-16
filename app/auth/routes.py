@@ -135,7 +135,7 @@ def forgot_password(data):
     email = data['email']
     payload = {'email': email}
     token = encode_token(
-        payload=payload, lifetime=app.config['CHANGE_PASSWORD_TOKEN_LIFETIME'])
+        payload=payload, lifetime=app.config['RESET_PASSWORD_TOKEN_LIFETIME'])
 
     mail.send_reset_password_mail(recipient=email, token=token.decode('utf-8'))
 
