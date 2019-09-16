@@ -17,8 +17,10 @@ def validate_password(password):
        not re.search(r"[A-Z]", password) or \
        not re.search(r"[0-9]", password):
         raise ValidationError(
-            f"Password's length must be at least {min_l} characters. "
-            "Must contain number, upper and lower case letters.")
+            f"Password length must be {min_l}-{max_l} characters. "
+            "It must contain at least one number, "
+            "upper and lower case letters."
+        )
 
 
 def validate_email(email):

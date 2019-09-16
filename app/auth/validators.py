@@ -28,7 +28,7 @@ def _confirm_registration(data):
     try:
         _registration(data)
     except ValidationError:
-        raise ValidationError('Token invalid.', 40)
+        raise ValidationError('Token invalid.')
 
 
 def already_registered(email):
