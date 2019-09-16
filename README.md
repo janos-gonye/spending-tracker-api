@@ -8,6 +8,7 @@ You can clone, configure and deploy your own instance (to [Heroku](https://www.h
 #### What you can do with it
  - Create categories and subcategories of any category.
  - Add transactions to categories.
+ - Merge categories into one another.
  - Show statistics and export it to JSON format which sent automatically to your registered email address.
  - Users can register by email address which must be confirmed. So your friends, family members or girlfriend can use it, too.
 
@@ -93,15 +94,18 @@ Set the folllowing environment variables
 "REGISTRATION_TOKEN_LIFETIME": "<your-registartion-token-lifetime>"               # As seconds, default: 86400
 "CANCEL_REGISTRATION_TOKEN_LIFETIME": "<your-cancel-registartion-token-lifetime>" # As seconds, default: 86400
 "LOGIN_TOKEN_LIFETIME": "<login-token-lifetime>"                                  # As seconds, default: 3600
+"RESET_PASSWORD_TOKEN_LIFETIME": "<reset-password-token-lifetime>"
+# As seconds, default: 3600
+"PASSWORD_MIN_LEN": "password min required length"
+# Integer number > 0, default: 6
+"PASSWORD_MAX_LEN": "password max allowed length"
+# Integer number > 0, default: 50
 ```
 
 Run server
 ```bash
 flask run
 ```
-
-## Setup for development on Windows
-> Coming soon...
 
 ## API Endpoints
 
@@ -135,6 +139,26 @@ flask run
 ```
 ***[GET]** /api/auth/verify-token*
 
+#### Change Password
+***[POST]** /api/auth/change-password*
+```json
+{
+	"old_password": "<string:required>",
+	"new_password": "<string:required>"
+}
+```
+
+#### Forgot Password
+***[POST]** /api/auth/forgot-password*
+```json
+{
+	"email": "<string:required>"
+}
+```
+
+#### Reset Password
+***[GET]** /api/auth/reset-password*
+
 <hr>
 
 #### CRUD Categories
@@ -162,19 +186,29 @@ flask run
 ```
 ***[DELETE]** /api/categories/<int:category_id>*
 
+***[POST]** /api/merge-categories*
+
+```json
+{
+	"subject_id": "<number:required>",
+	"target_id":  "<number:required>"
+}
+```
+
 <hr>
 
 #### CRUD Transactions
 
 ***[GET]** /api/categories/<int:category_id  OR "\*">/transactions?from=<number|string:optional>&to=<number|string:optional>*
 
-> *Query parameters 'from' and 'to' are UNIX time stamps and optional*
+> *Query parameters 'from', 'to' and key 'processed_at' are UNIX timestamps.*  
+> *Query parameters 'from' and 'to' are optional.*
 
 ***[POST]** /api/categories/<int:category_id>/transactions*
 ```json
 {
     "amount": "<number:required>",
-    "processed_at": "<number|string:required>", // Unix Timestamp
+    "processed_at": "<number|string:required>",
     "comment": "<string:optional>"
 }
 ```
@@ -184,7 +218,7 @@ flask run
 ```json
 {
     "amount": "<number:optional>",
-    "processed_at": "<number|string:optional>", // Unix Timestamp
+    "processed_at": "<number|string:optional>",
     "comment": "<string:optional>"
 }
 ```
