@@ -6,7 +6,7 @@ from app.transactions.models import Transaction
 class ScheduledTransaction(Transaction):
     __tablename__ = 'scheduled_transactions'
 
-    frequency = db.Column(db.ChoiceTyp({
+    frequency = db.Column(ChoiceType({
         "week": "week",
         "month": "month",
         "year": "year",

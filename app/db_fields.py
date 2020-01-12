@@ -1,4 +1,4 @@
-import sqlalchemy.types
+from sqlalchemy import types
 
 
 class ChoiceType(types.TypeDecorator):

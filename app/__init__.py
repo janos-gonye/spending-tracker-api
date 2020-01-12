@@ -5,7 +5,8 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object('config')
 
-    from . import auth, db, categories, mail, transactions, statistics, errors
+    from . import auth, db, categories, mail, transactions, statistics,\
+                  errors, scheduled_trans
     auth.init_app(app)
     db.init_app(app)
     categories.init_app(app)
