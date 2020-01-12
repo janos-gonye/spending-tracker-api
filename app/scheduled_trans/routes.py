@@ -16,7 +16,7 @@ def create_scheduled_trans(data, current_user):
 @jsonify_view
 @token_required
 def get_scheduled_trans_s(current_user):
-    scheduled_trans_s = current_user.scheduled_transactions.query.all()
+    scheduled_trans_s = current_user.scheduled_transactions
     return [trans.as_dict() for trans in scheduled_trans_s], 200, {
         'key': 'scheduled_transactions'}
 
