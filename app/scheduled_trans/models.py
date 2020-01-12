@@ -13,3 +13,10 @@ class ScheduledTransaction(Transaction):
     }), nullable=False)
     day = db.Column(db.Integer, nullable=False)
     is_active = db.Column(db.Boolean, nullable=False)
+
+    def as_dict(self):
+        dict_ = super().as_dict()
+        dict_['frequency'] = self.frequency,
+        dict_['day'] = self.day,
+        dict_['is_active'] = self.is_active
+        return dict_
