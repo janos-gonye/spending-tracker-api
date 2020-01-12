@@ -25,7 +25,7 @@ def get_scheduled_trans_s(current_user):
 @token_required
 @get_scheduled_trans_or_404
 def get_scheduled_trans(current_user, scheduled_trans):
-    pass
+    return scheduled_trans.as_dict(), 200, {'key': 'scheduled_trans'}
 
 
 @scheduled_trans_blueprint.route('/<int:scheduled_trans_id', methods=['PATCH'])
