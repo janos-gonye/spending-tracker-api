@@ -1,11 +1,12 @@
+from app.common.models import AbstractTransaction
 from app.db import db
 from app.db_fields import ChoiceType
-from app.common.models import AbstractTransaction
 
 
 class ScheduledTransaction(AbstractTransaction):
     __tablename__ = 'scheduled_transactions'
 
+    id = db.Column(db.Integer, primary_key=True)
     frequency = db.Column(ChoiceType({
         "week": "week",
         "month": "month",

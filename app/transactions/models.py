@@ -2,11 +2,13 @@ from datetime import datetime
 
 from app.common import datetime2timestamp
 from app.common.models import AbstractTransaction
+from app.db import db
 
 
-class Transaction(db.Model):
+class Transaction(AbstractTransaction):
     __tablename__ = 'transactions'
 
+    id = db.Column(db.Integer, primary_key=True)
     # when the money is earned or spent (stored as DateTime,
     # it's useful when creating financial reports)
     processed_at = db.Column(db.DateTime, nullable=False)

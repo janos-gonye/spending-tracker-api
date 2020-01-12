@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from sqlalchemy.ext.declarative import declared_attr
+
 from app.categories.models import Category
 from app.common import datetime2timestamp
 from app.db import db
@@ -11,12 +13,14 @@ class AbstractTransaction(db.Model):
     MIN_COMMENT_LEN = 0
     MAX_COMMENT_LEN = 300
 
-    id = db.Column(db.Integer, primary_key=True)
     # amount of money, + -> income, - -> outcome
     amount = db.Column(db.Float, nullable=False)
     comment = db.Column(db.String(MAX_COMMENT_LEN), default="")
-    category_id = db.Column(db.Integer, db.ForeignKey(
-        'categories.id', ondelete='cascade'), nullable=False)
+
+    @declared_attr
+    def category_id(cls):
+        return db.Column(db.Integer, db.ForeignKey(
+            'categories.id', ondelete='cascade'), nullable=False)
 
     @property
     def category(self):
