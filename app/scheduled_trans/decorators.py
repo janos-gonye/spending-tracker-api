@@ -8,7 +8,8 @@ from app.scheduled_trans.models import ScheduledTransaction
 def get_scheduled_trans_or_404(f):
     @wraps(f)
     def decorated(current_user, *args, **kwargs):
-        scheduled_trans = current_user.scheduled_transactions.query.filter_by(
+        scheduled_trans = ScheduledTransaction.query.filter_by(
+            user_id=current_user.id,
             id=request.view_args['scheduled_trans_id']).first()
         if not scheduled_trans:
             return 'Scheduled transaction not found.', 404

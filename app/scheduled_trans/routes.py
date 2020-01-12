@@ -2,7 +2,6 @@ from app.auth.decorators import token_required
 from app.common.decorators import jsonify_view
 from app.scheduled_trans import scheduled_trans_blueprint
 from app.scheduled_trans.decorators import get_scheduled_trans_or_404
-from app.scheduled_trans.models import ScheduledTransaction
 
 
 @scheduled_trans_blueprint.route('', methods=['POST'])
