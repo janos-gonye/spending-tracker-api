@@ -1,6 +1,7 @@
 from app.auth.decorators import token_required
 from app.common.decorators import jsonify_view
 from app.scheduled_trans import scheduled_trans_blueprint
+from app.scheduled_trans.models import ScheduledTransaction
 
 
 @scheduled_trans_blueprint.route('', methods=['POST'])
@@ -14,7 +15,9 @@ def create_scheduled_trans(data, current_user):
 @jsonify_view
 @token_required
 def get_scheduled_trans_s(current_user):
-    pass
+    scheduled_trans_s = ScheduledTransaction.query.all()
+    return [trans.as_dict() for trans in scheduled_trans_s], 200, {
+        'key': 'scheduled_transactions'}
 
 
 @scheduled_trans_blueprint.route('/<int:scheduled_trans_id', methods=['GET'])
