@@ -14,6 +14,8 @@ class ScheduledTransaction(AbstractTransaction):
     }), nullable=False)
     day = db.Column(db.Integer, nullable=False)
     is_active = db.Column(db.Boolean, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(
+        'users.id', ondelete='cascade'), nullable=False)
 
     def as_dict(self):
         dict_ = super().as_dict()

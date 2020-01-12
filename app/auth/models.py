@@ -17,6 +17,8 @@ class User(db.Model):
     updated_at = db.Column(
         db.DateTime, default=datetime.utcnow, nullable=False)
     categories = db.relationship('Category', cascade="all,delete")
+    scheduled_transactions = db.relationship('ScheduledTransaction',
+                                        cascade="all,delete")
 
     def __init__(self, public_id, email, password, role=10):
         """int role: <user: 10> and <admin: 90>"""
