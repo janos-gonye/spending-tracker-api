@@ -1,9 +1,9 @@
 from app.db import db
 from app.db_fields import ChoiceType
-from app.transactions.models import Transaction
+from app.common.models import AbstractTransaction
 
 
-class ScheduledTransaction(Transaction):
+class ScheduledTransaction(AbstractTransaction):
     __tablename__ = 'scheduled_transactions'
 
     frequency = db.Column(ChoiceType({
