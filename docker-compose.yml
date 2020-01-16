@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+    spending-tracker-db:
+        image: "postgres:alpine"
+        container_name: spending-tracker-db
+        restart: always
+        env_file:
+          - ./.env.secret
+        volumes:
+          - ./postgres/data:/var/lib/postgresql/data
+
+    spending-tracker-backend:
+        build: .
+        image: "alpine"
+        container_name: spending-tracker-backend
+        command: flask run --host 0.0.0.0
+        ports:
+            - "5000:5000"
+        depends_on:
+            - spending-tracker-db
+        links:
+            - "spending-tracker-db:spending-tracker-db"
+        env_file:
+            - ./.env
+            - ./.env.secret
