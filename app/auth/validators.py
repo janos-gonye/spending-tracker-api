@@ -4,6 +4,7 @@ from app.auth.models import User
 from app.common.exceptions import ValidationError
 from app.common.templates import (json_validator_template,
                                   token_as_arg_validator_template)
+from app.common.token import TokenTypes
 from app.common.validators import validate_email, validate_password
 
 
@@ -79,5 +80,6 @@ registration = json_validator_template(_registration)
 login = json_validator_template(_login)
 change_password = json_validator_template(_change_password)
 forgot_password = json_validator_template(_forgot_password)
-confirm_registration = token_as_arg_validator_template(_confirm_registration)
-token_as_arg = token_as_arg_validator_template(None)
+confirm_registration = token_as_arg_validator_template(_confirm_registration, TokenTypes.REGISTRATION)
+confirm_cancel_registration = token_as_arg_validator_template(None, TokenTypes.CANCEL_REGISTRATION)
+reset_password = token_as_arg_validator_template(None, TokenTypes.RESET_PASSWORD)

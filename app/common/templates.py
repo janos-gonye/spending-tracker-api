@@ -22,7 +22,7 @@ def json_validator_template(validator=None):
     return decorator
 
 
-def token_as_arg_validator_template(validator=None):
+def token_as_arg_validator_template(validator, token_type):
     def decorator(f):
 
         @wraps(f)
@@ -30,12 +30,14 @@ def token_as_arg_validator_template(validator=None):
             token = request.args.get('token')
             if not token:
                 raise ValidationError('Token missing.')
-            payload = decode_token(token)
+            payload = decode_token(token, token_type)
             if not payload:
                 raise ValidationError('Token invalid.')
             expires_at = payload.get('expiresAt')
             if expires_at and float(expires_at) < time():
                 raise ValidationError('Token expired.', 401)
+            if validator:
+                validator(payload, *args, **kwargs)
             return f(payload, *args, **kwargs)
         return decorated
     return decorator

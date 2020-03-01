@@ -64,7 +64,7 @@ def cancel_registration(current_user):
 
 
 @auth.route('/registration/cancel/confirm', methods=['GET'])
-@validators.token_as_arg
+@validators.confirm_cancel_registration
 def confirm_cancel_registration(data):
     user = User.query.filter_by(public_id=data.get('public_id')).first()
 
@@ -144,7 +144,7 @@ def forgot_password(data):
     email = data['email']
     payload = {'email': email}
     token = encode_token(
-        payload=payload, token_type=TokenTypes.FORGOT_PASSWORD,
+        payload=payload, token_type=TokenTypes.RESET_PASSWORD,
         lifetime=app.config['RESET_PASSWORD_TOKEN_LIFETIME'])
 
     mail.send_reset_password_mail(recipient=email, token=token.decode('utf-8'))
@@ -153,7 +153,7 @@ def forgot_password(data):
 
 
 @auth.route('/reset-password', methods=['GET'])
-@validators.token_as_arg
+@validators.reset_password
 def reset_password(data):
     email = data.get('email')
     if not email:

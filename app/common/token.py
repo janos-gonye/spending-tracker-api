@@ -7,11 +7,11 @@ from jwt.exceptions import PyJWTError  # base class of all pyjwt exceptions
 
 
 class TokenTypes:
-    REGISTRATION = 0
-    CANCEL_REGISTRATION = 1
-    ACCESS = 2
-    REFRESH = 3
-    FORGOT_PASSWORD = 4
+    REGISTRATION = 'registration'
+    CANCEL_REGISTRATION = 'cancel_registration'
+    ACCESS = 'access'
+    REFRESH = 'refresh'
+    RESET_PASSWORD = 'reset_password'
 
 
 # Warning, default arguments are evaluated at definition time
