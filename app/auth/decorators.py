@@ -4,7 +4,7 @@ from time import time
 from flask import request
 
 from app.auth.models import User
-from app.common.token import decode_token
+from app.common.token import decode_token, TokenTypes
 
 
 def token_required(f=None, min_role=10):
@@ -27,7 +27,7 @@ def token_required(f=None, min_role=10):
             return 'Token missing.', 401
 
         token = token[7:]  # chop off <Bearer >
-        payload = decode_token(token)
+        payload = decode_token(token, TokenTypes.ACCESS)
         if not payload:
             return 'Invalid token.', 401
 
