@@ -94,6 +94,7 @@ Set the folllowing environment variables
 "REGISTRATION_TOKEN_LIFETIME": "<your-registartion-token-lifetime>"               # As seconds, default: 86400
 "CANCEL_REGISTRATION_TOKEN_LIFETIME": "<your-cancel-registartion-token-lifetime>" # As seconds, default: 86400
 "LOGIN_TOKEN_LIFETIME": "<login-token-lifetime>"                                  # As seconds, default: 3600
+"REFRESH_TOKEN_LIFETIME": "<refresh-token-lifetime>"							  # As seconds, default: 2592000 (30 days)
 "RESET_PASSWORD_TOKEN_LIFETIME": "<reset-password-token-lifetime>"                # As seconds, default: 3600
 "PASSWORD_MIN_LEN": "password min required length"                                # Integer number > 0, default: 6
 "PASSWORD_MAX_LEN": "password max allowed length"                                 # Integer number > 0, default: 50
