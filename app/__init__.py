@@ -14,6 +14,6 @@ def create_app():
     transactions.init_app(app)
     statistics.init_app(app)
     errors.init_app(app)
-    scheduled_trans.init_app(app)
+    # scheduled_trans.init_app(app)
 
     return app
