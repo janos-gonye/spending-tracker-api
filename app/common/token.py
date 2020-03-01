@@ -6,9 +6,9 @@ from jwt import decode, encode
 from jwt.exceptions import PyJWTError  # base class of all pyjwt exceptions
 
 
-# Big Warning, default arguments are evaluated at definition time
+# Warning, default arguments are evaluated at definition time
 # therefore never type e.g.: from_=time() in a function's definition
-def encode_token(payload, lifetime=3600, from_=None):
+def encode_token(payload, token_type, lifetime=3600, from_=None):
     """
     <lifetime> as seconds
     if lifetime is None, the token never expires --> ! Not recommended
@@ -29,11 +29,12 @@ def encode_token(payload, lifetime=3600, from_=None):
         # add some randomness, even if token never expires
         # otherwise same user, same password input would cause same output
         payload['randomness'] = str(uuid4())
+    payload[token_type] = True
 
     return encode(payload, str(app.secret_key))
 
 
-def decode_token(token):
+def decode_token(token, token_type):
     """
     if token invalid, return None
     """
@@ -44,6 +45,8 @@ def decode_token(token):
     try:
         payload = decode(token, app.secret_key)
     except PyJWTError:
+        return None
+    if payload.get(token_type) is not True:
         return None
 
     return payload
