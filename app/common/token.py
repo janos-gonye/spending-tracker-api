@@ -1,3 +1,4 @@
+from enum import Enum
 from time import time
 from uuid import uuid4
 
@@ -5,6 +6,9 @@ from flask import current_app as app
 from jwt import decode, encode
 from jwt.exceptions import PyJWTError  # base class of all pyjwt exceptions
 
+
+TokenTypes = Enum('TokenTypes',
+                  'registration cancel_registration access refresh')
 
 # Warning, default arguments are evaluated at definition time
 # therefore never type e.g.: from_=time() in a function's definition
