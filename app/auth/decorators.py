@@ -35,7 +35,6 @@ def token_required(f=None, min_role=10):
             public_id=payload.get('public_id')).first()
 
         if payload.get('expiresAt') and payload['expiresAt'] < time():
-            # TODO: Do something with expired.
             return 'Session expired.', 401, {"expired": True}
         if current_user:
             if int(current_user.role) >= min_role:

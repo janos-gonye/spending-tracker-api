@@ -4,7 +4,7 @@ from app.auth.models import User
 from app.common.exceptions import ValidationError
 from app.common.templates import (json_validator_template,
                                   token_as_arg_validator_template)
-from app.common.token import TokenTypes
+from app.common.token import TokenTypes, decode_token
 from app.common.validators import validate_email, validate_password
 
 
@@ -50,6 +50,22 @@ def _login(data):
         raise ValidationError('Invalid credentials.', 401)
 
 
+def _refresh_token(data):
+    refresh_token = data.get('refresh_token')
+
+    if not refresh_token:
+        raise ValidationError('Refresh token missing.', 400)
+
+    payload = decode_token(refresh_token, TokenTypes.REFRESH)
+    if not payload:
+        raise ValidationError('Token invalid.', 400)
+
+    current_user = User.query.filter_by(
+        public_id=payload.get('public_id')).first()
+    if not current_user:
+        raise ValidationError('Token invalid.', 400)
+
+
 def _change_password(data, current_user):
     old_password = data.get('old_password')
     new_password = data.get('new_password')
@@ -78,6 +94,7 @@ def _forgot_password(data):
 
 registration = json_validator_template(_registration)
 login = json_validator_template(_login)
+refresh_token = json_validator_template(_refresh_token)
 change_password = json_validator_template(_change_password)
 forgot_password = json_validator_template(_forgot_password)
 confirm_registration = token_as_arg_validator_template(_confirm_registration, TokenTypes.REGISTRATION)

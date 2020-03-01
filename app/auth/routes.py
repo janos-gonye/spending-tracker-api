@@ -91,11 +91,11 @@ def confirm_cancel_registration(data):
 def login(data):
     user = User.query.filter_by(email=data['email']).first()
 
-    payload = {'public_id': user.public_id, 'access': True}
+    payload = {'public_id': user.public_id}
     access_token = encode_token(
         payload=payload, token_type=TokenTypes.ACCESS,
         lifetime=app.config['LOGIN_TOKEN_LIFETIME'])
-    payload = {'public_id': user.public_id, 'refresh': True}
+    payload = {'public_id': user.public_id}
     refresh_token = encode_token(
         payload=payload, token_type=TokenTypes.REFRESH,
         lifetime=app.config['REFRESH_TOKEN_LIFETIME'])
@@ -103,6 +103,25 @@ def login(data):
     return None, 201, {
         'access_token': access_token.decode('utf-8'),
         'refresh_token': refresh_token.decode('utf-8')
+    }
+
+
+@auth.route('/refresh-token', methods=['POST'])
+@jsonify_view
+@validators.refresh_token
+def refresh_token(data):
+    payload = decode_token(data['refresh_token'], TokenTypes.REFRESH)
+
+    if payload.get('expiresAt') and payload['expiresAt'] < time():
+        return 'Session expired.', 401, {"expired": True}
+
+    payload = {'public_id': payload['public_id']}
+    access_token = encode_token(
+        payload=payload, token_type=TokenTypes.ACCESS,
+        lifetime=app.config['LOGIN_TOKEN_LIFETIME'])
+    
+    return None, 201, {
+        'access_token': access_token.decode('utf-8')
     }
 
 
