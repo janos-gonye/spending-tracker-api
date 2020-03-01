@@ -90,11 +90,17 @@ def confirm_cancel_registration(data):
 def login(data):
     user = User.query.filter_by(email=data['email']).first()
 
-    payload = {'public_id': user.public_id}
-    token = encode_token(
+    payload = {'public_id': user.public_id, 'access': True}
+    access_token = encode_token(
         payload=payload, lifetime=app.config['LOGIN_TOKEN_LIFETIME'])
+    payload = {'public_id': user.public_id, 'refresh': True}
+    refresh_token = encode_token(
+        payload=payload, lifetime=app.config['REFRESH_TOKEN_LIFETIME'])
 
-    return None, 201, {'token': token.decode('utf-8')}
+    return None, 201, {
+        'access_token': access_token.decode('utf-8'),
+        'refresh_token': refresh_token.decode('utf-8')
+    }
 
 
 @auth.route('/verify-token', methods=['GET'])
