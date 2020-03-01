@@ -1,4 +1,3 @@
-from enum import Enum
 from time import time
 from uuid import uuid4
 
@@ -7,8 +6,13 @@ from jwt import decode, encode
 from jwt.exceptions import PyJWTError  # base class of all pyjwt exceptions
 
 
-TokenTypes = Enum('TokenTypes',
-                  'registration cancel_registration access refresh')
+class TokenTypes:
+    REGISTRATION = 0
+    CANCEL_REGISTRATION = 1
+    ACCESS = 2
+    REFRESH = 3
+    FORGOT_PASSWORD = 4
+
 
 # Warning, default arguments are evaluated at definition time
 # therefore never type e.g.: from_=time() in a function's definition

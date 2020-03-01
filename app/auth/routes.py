@@ -12,7 +12,7 @@ from app.auth.decorators import token_required
 from app.auth.models import User
 from app.common.decorators import jsonify_view
 from app.common.helpers import generate_password
-from app.common.token import decode_token, encode_token
+from app.common.token import TokenTypes, decode_token, encode_token
 from app.db import db
 
 
@@ -22,7 +22,8 @@ from app.db import db
 def registration(data):
     payload = {'email': data['email'], 'password': data['password']}
     token = encode_token(
-        payload=payload, lifetime=app.config['REGISTRATION_TOKEN_LIFETIME'])
+        payload=payload, token_type=TokenTypes.REGISTRATION,
+        lifetime=app.config['REGISTRATION_TOKEN_LIFETIME'])
 
     mail.send_reg_confirm_mail(recipient=data['email'], token=token.decode('utf-8'))
 
@@ -53,7 +54,7 @@ def confirm_registration(data):
 def cancel_registration(current_user):
     payload = {'public_id': current_user.public_id}
     token = encode_token(
-        payload=payload,
+        payload=payload, token_type=TokenTypes.CANCEL_REGISTRATION,
         lifetime=app.config['CANCEL_REGISTRATION_TOKEN_LIFETIME'])
 
     mail.send_cancel_reg_confirm_email(
@@ -92,10 +93,12 @@ def login(data):
 
     payload = {'public_id': user.public_id, 'access': True}
     access_token = encode_token(
-        payload=payload, lifetime=app.config['LOGIN_TOKEN_LIFETIME'])
+        payload=payload, token_type=TokenTypes.ACCESS,
+        lifetime=app.config['LOGIN_TOKEN_LIFETIME'])
     payload = {'public_id': user.public_id, 'refresh': True}
     refresh_token = encode_token(
-        payload=payload, lifetime=app.config['REFRESH_TOKEN_LIFETIME'])
+        payload=payload, token_type=TokenTypes.REFRESH,
+        lifetime=app.config['REFRESH_TOKEN_LIFETIME'])
 
     return None, 201, {
         'access_token': access_token.decode('utf-8'),
@@ -141,7 +144,8 @@ def forgot_password(data):
     email = data['email']
     payload = {'email': email}
     token = encode_token(
-        payload=payload, lifetime=app.config['RESET_PASSWORD_TOKEN_LIFETIME'])
+        payload=payload, token_type=TokenTypes.FORGOT_PASSWORD,
+        lifetime=app.config['RESET_PASSWORD_TOKEN_LIFETIME'])
 
     mail.send_reset_password_mail(recipient=email, token=token.decode('utf-8'))
 
