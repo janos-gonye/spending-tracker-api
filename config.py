@@ -1,9 +1,4 @@
-from os import environ, path
-
-from dotenv import load_dotenv
-
-dotenv_path = path.realpath('./.env')
-load_dotenv(dotenv_path)
+from os import environ
 
 # Basic stuff
 SECRET_KEY 						= environ.get('SECRET_KEY', 'secret_key_123')
