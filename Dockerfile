@@ -1,21 +1,18 @@
-FROM alpine:latest
+FROM python:3.8.0-alpine
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
+WORKDIR /www/spending_tracker
+
+ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-RUN apk --update --no-cache add \
-    python3 \
-    python3-dev \
-    postgresql-client \
-    postgresql-dev
-RUN apk add --no-cache \
-    ca-certificates \
-    && update-ca-certificates
+# install psycopg2 dependencies
+RUN apk update \
+    && apk add postgresql-dev gcc python3-dev musl-dev
 
-WORKDIR /www
-COPY requirements.txt .
-RUN pip3 install --upgrade pip && pip3 install -r requirements.txt
+RUN pip install --upgrade pip
+COPY ./requirements.txt ./requirements.txt
+RUN pip install -r requirements.txt
 
 COPY . ./
+
+CMD ["./entrypoint.sh"]
