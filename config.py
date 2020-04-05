@@ -17,7 +17,7 @@ MAIL_DEBUG 						= int(environ.get('MAIL_DEBUG', 1))
 MAIL_USERNAME 					= environ.get('MAIL_USERNAME')
 MAIL_PASSWORD 					= environ.get('MAIL_PASSWORD')
 MAIL_DEFAULT_SENDER 			= environ.get('MAIL_DEFAULT_SENDER')
-MAIL_MAX_EMAILS 				= environ.get('MAIL_MAX_EMAILS', '') if environ.get('MAIL_MAX_EMAILS') == '' else int(environ.get('MAIL_MAX_EMAILS'))
+MAIL_MAX_EMAILS 				= int(environ.get('MAIL_MAX_EMAILS'))
 MAIL_ASCII_ATTACHMENTS 			= int(environ.get('MAIL_ASCII_ATTACHMENTS'))
 
 # Database related
