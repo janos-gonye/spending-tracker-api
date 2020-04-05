@@ -1,27 +1,33 @@
-from os import environ
+from os import environ, path
+
+from dotenv import load_dotenv
+
+dotenv_path = path.realpath('./.env')
+load_dotenv(dotenv_path)
 
 # Basic stuff
-DEBUG 							= environ.get('DEBUG') == 'True'
-ENV 							= environ.get('ENV')
-SECRET_KEY 						= environ.get('SECRET_KEY')
-TESTING 						= environ.get('TESTING') == 'True'
+SECRET_KEY 						= environ.get('SECRET_KEY', 'secret_key_123')
 
 # smtp and sending mails
 MAIL_SERVER 					= environ.get('MAIL_SERVER')
 MAIL_PORT 						= environ.get('MAIL_PORT')
-MAIL_USE_TLS 					= environ.get('MAIL_USE_TLS') == 'True'
-MAIL_USE_SSL 					= environ.get('MAIL_USE_SSL') == 'True'
-MAIL_DEBUG 						= str(environ.get('MAIL_DEBUG', DEBUG)) == 'True'
+MAIL_USE_TLS 					= int(environ.get('MAIL_USE_TLS', 1))
+MAIL_USE_SSL 					= int(environ.get('MAIL_USE_SSL', 1))
+MAIL_DEBUG 						= int(environ.get('MAIL_DEBUG', 1))
 MAIL_USERNAME 					= environ.get('MAIL_USERNAME')
 MAIL_PASSWORD 					= environ.get('MAIL_PASSWORD')
 MAIL_DEFAULT_SENDER 			= environ.get('MAIL_DEFAULT_SENDER')
-MAIL_MAX_EMAILS 				= environ.get('MAIL_MAX_EMAILS') if environ.get('MAIL_MAX_EMAILS') is None else int(environ.get('MAIL_MAX_EMAILS'))
-MAIL_SUPPRESS_SEND 				= str(environ.get('MAIL_SUPPRESS_SEND', TESTING)) == 'True'
-MAIL_ASCII_ATTACHMENTS 			= environ.get('MAIL_ASCII_ATTACHMENTS') == 'True'
+MAIL_MAX_EMAILS 				= environ.get('MAIL_MAX_EMAILS', '') if environ.get('MAIL_MAX_EMAILS') == '' else int(environ.get('MAIL_MAX_EMAILS'))
+MAIL_ASCII_ATTACHMENTS 			= int(environ.get('MAIL_ASCII_ATTACHMENTS'))
 
 # Database related
-SQLALCHEMY_DATABASE_URI 		= environ.get('SQLALCHEMY_DATABASE_URI')
-SQLALCHEMY_TRACK_MODIFICATIONS 	= environ.get('SQLALCHEMY_TRACK_MODIFICATIONS') == 'True'
+POSTGRES_HOST                       = environ.get('POSTGRES_HOST')
+POSTGRES_USER                       = environ.get('POSTGRES_USER')
+POSTGRES_PASSWORD                   = environ.get('POSTGRES_PASSWORD')
+POSTGRES_DB                         = environ.get('POSTGRES_DB')
+POSTGRES_PORT                       = environ.get('POSTGRES_PORT')
+SQLALCHEMY_DATABASE_URI             = f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+SQLALCHEMY_TRACK_MODIFICATIONS 	    = int(environ.get('SQLALCHEMY_TRACK_MODIFICATIONS', 0))
 
 # Non flask or flask extension related
 REGISTRATION_TOKEN_LIFETIME 		= int(environ.get('REGISTRATION_TOKEN_LIFETIME', 24 * 60 * 60)) # seconds
