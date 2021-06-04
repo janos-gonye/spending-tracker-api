@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from re import compile
 
+from flask import current_app as app
 from flask import jsonify, url_for
 
 
@@ -70,6 +71,9 @@ def is_float(string):
 
 
 def create_link(url_root, endpoint, token=None):
+    # Always send link with https in production
+    if not app.config['DEBUG'] and not url_root.startswith('https'):
+        url_root = url_root.replace('http', 'https')
     # Remove the first '/' character
     link = url_root + url_for(endpoint)[1:]
     if token:
