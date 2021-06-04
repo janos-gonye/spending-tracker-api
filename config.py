@@ -2,6 +2,7 @@ from os import environ
 
 # Basic stuff
 SECRET_KEY 						= environ.get('SECRET_KEY', 'secret_key_123')
+DEBUG                           = int(environ.get('FLASK_DEBUG', 1))
 
 # smtp and sending mails
 MAIL_SERVER 					= environ.get('MAIL_SERVER')
