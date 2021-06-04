@@ -1,0 +1,55 @@
+###########
+# BUILDER #
+###########
+
+FROM python:3.8.0-alpine as builder
+
+WORKDIR /www/spending_tracker
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# install psycopg2 dependencies
+RUN apk update \
+    && apk add postgresql-dev gcc python3-dev musl-dev
+
+RUN pip install --upgrade pip
+COPY . .
+COPY ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /www/spending_tracker/wheels -r requirements.txt
+
+#########
+# FINAL #
+#########
+
+FROM python:3.8.0-alpine
+
+
+ENV APP_HOME=/www/spending_tracker
+RUN mkdir -p $APP_HOME
+RUN mkdir -p $APP_HOME/staticfiles
+RUN mkdir -p $APP_HOME/mediafiles
+WORKDIR $APP_HOME
+
+
+# WORKDIR /www/spending_tracker
+# RUN mkdir -p ./staticfiles
+# RUN mkdir -p ./mediafiles
+
+RUN addgroup -S app && adduser -S app -G app
+
+# install dependencies
+RUN apk update && apk add libpq
+COPY --from=builder /www/spending_tracker/wheels /wheels
+COPY --from=builder /www/spending_tracker/requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
+
+COPY ./entrypoint.prod.sh $APP_HOME
+COPY . $APP_HOME
+
+RUN chown -R app:app $APP_HOME
+
+USER app
+
+ENTRYPOINT ["./entrypoint.prod.sh"]
