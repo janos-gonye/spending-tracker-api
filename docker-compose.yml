@@ -12,12 +12,12 @@ services:
     web:
         build: .
         container_name: spending-tracker_web
-        command: flask run --host $HOST --port $PORT
+        command: flask wsgi --host 0.0.0.0 --port 5000
         restart: on-failure
         volumes:
             - ./:/www/spending_tracker
-        ports:
-            - $PORT:$PORT
+        expose:
+            - 5000
         depends_on:
             - db
         env_file:
