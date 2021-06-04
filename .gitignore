@@ -99,6 +99,7 @@ celerybeat-schedule
 # Environments
 .env
 .env.secret
+.env.prod
 .venv
 env/
 venv/
