@@ -13,7 +13,7 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     container_name: prod-spending-tracker_web
-    command: gunicorn spending_tracker.wsgi:create_app() --bind 0.0.0.0:5000
+    command: gunicorn wsgi:create_app() --bind 0.0.0.0:5000
     expose:
       - 5000
     env_file:
