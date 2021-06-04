@@ -45,11 +45,8 @@ COPY --from=builder /www/spending_tracker/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
-COPY ./entrypoint.prod.sh $APP_HOME
 COPY . $APP_HOME
 
 RUN chown -R app:app $APP_HOME
 
 USER app
-
-ENTRYPOINT ["./entrypoint.prod.sh"]
