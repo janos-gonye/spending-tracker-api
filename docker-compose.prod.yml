@@ -4,6 +4,7 @@ services:
   db:
     image: postgres:12.0-alpine
     container_name: prod-spending-tracker_db
+    restart: always
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
@@ -13,6 +14,7 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     container_name: prod-spending-tracker_web
+    restart: always
     command: gunicorn wsgi:create_app() --bind 0.0.0.0:5000
     expose:
       - 5000
