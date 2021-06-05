@@ -4,7 +4,7 @@ services:
     db:
         image: postgres:12.0-alpine
         container_name: spending-tracker_db
-        restart: always
+        restart: on-failure
         env_file:
             - ./.env
         volumes:
