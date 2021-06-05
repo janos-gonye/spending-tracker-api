@@ -1,27 +1,29 @@
 version: "3"
 
 services:
-    db:
-        image: postgres:12.0-alpine
-        container_name: spending-tracker_db
-        restart: on-failure
-        env_file:
-            - ./.env
-        volumes:
-            - postgres_data:/var/lib/postgresql/data/
-    web:
-        build: .
-        container_name: spending-tracker_web
-        command: flask run --host 0.0.0.0 --port 5000
-        restart: on-failure
-        volumes:
-            - ./:/www/spending_tracker
-        ports:
-            - 5000:5000
-        depends_on:
-            - db
-        env_file:
-            - ./.env
+  db:
+    image: postgres:12.0-alpine
+    container_name: spending-tracker_db
+    restart: on-failure
+    env_file:
+      - ./.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  web:
+    build: .
+    container_name: spending-tracker_web
+    command: flask run --host 0.0.0.0 --port 5000
+    restart: on-failure
+    volumes:
+      - ./:/www/spending_tracker
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+    env_file:
+      - ./.env
 
 volumes:
-    postgres_data:
+  postgres_data:
+
+  
