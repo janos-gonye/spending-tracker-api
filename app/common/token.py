@@ -39,7 +39,7 @@ def encode_token(payload, token_type, lifetime=3600, from_=None):
         payload['randomness'] = str(uuid4())
     payload[token_type] = True
 
-    return encode(payload, str(app.secret_key))
+    return encode(payload, str(app.secret_key), algorithm="HS256")
 
 
 def decode_token(token, token_type):
@@ -51,7 +51,7 @@ def decode_token(token, token_type):
         token = token.decode('utf-8')
 
     try:
-        payload = decode(token, app.secret_key)
+        payload = decode(token, app.secret_key, algorithms=["HS256"])
     except PyJWTError:
         return None
     if payload.get(token_type) is not True:

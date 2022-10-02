@@ -25,7 +25,7 @@ def registration(data):
         payload=payload, token_type=TokenTypes.REGISTRATION,
         lifetime=app.config['REGISTRATION_TOKEN_LIFETIME'])
 
-    mail.send_reg_confirm_mail(recipient=data['email'], token=token.decode('utf-8'))
+    mail.send_reg_confirm_mail(recipient=data['email'], token=token)
 
     return 'Confirmation email has been sent.', 202
 
@@ -58,7 +58,7 @@ def cancel_registration(current_user):
         lifetime=app.config['CANCEL_REGISTRATION_TOKEN_LIFETIME'])
 
     mail.send_cancel_reg_confirm_email(
-        recipient=current_user.email, token=token.decode('utf-8'))
+        recipient=current_user.email, token=token)
 
     return 'Confirmation email has been sent.', 202
 
@@ -101,8 +101,8 @@ def login(data):
         lifetime=app.config['REFRESH_TOKEN_LIFETIME'])
 
     return None, 201, {
-        'access_token': access_token.decode('utf-8'),
-        'refresh_token': refresh_token.decode('utf-8')
+        'access_token': access_token,
+        'refresh_token': refresh_token
     }
 
 
@@ -111,6 +111,9 @@ def login(data):
 @validators.refresh_token
 def refresh_token(data):
     payload = decode_token(data['refresh_token'], TokenTypes.REFRESH)
+
+    if not payload:
+        return "Token invalid.", 401
 
     if payload.get('expiresAt') and payload['expiresAt'] < time():
         return 'Session expired.', 401, {"expired": True}
@@ -121,7 +124,7 @@ def refresh_token(data):
         lifetime=app.config['LOGIN_TOKEN_LIFETIME'])
     
     return None, 201, {
-        'access_token': access_token.decode('utf-8')
+        'access_token': access_token
     }
 
 
@@ -166,7 +169,7 @@ def forgot_password(data):
         payload=payload, token_type=TokenTypes.RESET_PASSWORD,
         lifetime=app.config['RESET_PASSWORD_TOKEN_LIFETIME'])
 
-    mail.send_reset_password_mail(recipient=email, token=token.decode('utf-8'))
+    mail.send_reset_password_mail(recipient=email, token=token)
 
     return 'Email to reset your password sent.', 202
 
